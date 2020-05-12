@@ -45,10 +45,10 @@ waitress-serve --port=8080 restapi:api
 
 On Mac or Linux
 ```
-gunicorn restapi:api
+gunicorn restapi:api --bind='localhost:8080'
 ```
 
-To create a transaction, execute this exemple
+To create a transaction, execute this example
 ```
 curl -H 'Content-Type: application/json' -H 'Accept:application/json' --data '{\"validationType\":\"email\",\"params\":{\"didId\":\"did:elastos:1234567890\",\"email\":\"test@test.com\"}}' http://localhost:8080/start
 ```
