@@ -9,6 +9,10 @@ cd vouch-restapi-backend;
 
 Before start, you have to initiate vouch-redis-broker https://github.com/tuum-tech/vouch-redis-broker
 
+0. Install Wheel (If required because of an error using Step#1 'Could not build wheels for falcon, since package 'wheel' is not installed.')
+```
+pip install wheel 
+```
 
 1. Install Falcon API 
 ```
