@@ -54,3 +54,8 @@ To get all transactions from a DidId, execute this exemple
 curl "http://localhost:8080/get?didid=did:elastos:1234567890"
 ```
 
+To get all providers from a validationType, execute this exemple
+```
+curl "http://localhost:8080/providers?validationType=email"
+```
+
