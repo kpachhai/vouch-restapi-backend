@@ -2,6 +2,7 @@ import falcon
 import requests
 import json
 import uuid
+import sys
 from .brokerService import BrokerService
 from .mongoDatabase import MongoDatabase
 
@@ -15,11 +16,16 @@ class StartValidation:
         doc = json.loads(body)
         params = doc["params"]
         db = MongoDatabase()
-        transaction = db.create_transaction(params)
+
+        provider = db.get_provider_from_id(doc["providerId"])
+
+        
+        transaction = db.create_transaction(doc["validationType"], doc["providerId"], params)
         resp.media = transaction
         if doc["validationType"] == "email":
-            self.brokerService.send_email_validation({'transactionId': '{}'.format(transaction["_id"]), 'email': params["email"]})
+            self.brokerService.send_email_validation({'transactionId': '{}'.format(transaction["_id"]), 'email': params["email"]}, provider["apiKey"])
        except AttributeError:
+            print(sys.exc_info()[1])
             raise falcon.HTTPBadRequest(
                 'Invalid post',
                 'Payload must be submitted in the request body.')
