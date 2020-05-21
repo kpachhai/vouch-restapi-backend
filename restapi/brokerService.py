@@ -10,8 +10,8 @@ class BrokerService:
         print("Send message to broker")
         self.__redis.publish(channel, json.dumps(doc))
 
-    def send_email_validation(self, doc):
-        self.__send_message(doc, "email-validator")
+    def send_email_validation(self, doc, apiKey):
+        self.__send_message(doc, "email-validator-{}".format(apiKey))
 
     def start_monitors(self):
         callback = CallbackService(self.__redis)
