@@ -52,9 +52,19 @@ class MongoDatabase:
       collection.insert(provider)
       return provider
 
+   def get_provider_by_apikey(self, providerId):
+      collection = self.__db[self.__PROVIDERS_COLLECTION]
+      query = {"apiKey": providerId}
+      print("providerId")
+      print(providerId)
+      found = collection.find_one(query)
+      return found      
+
    def get_provider_from_id(self, providerId):
       collection = self.__db[self.__PROVIDERS_COLLECTION]
       query = {"_id": providerId}
+      print("providerId")
+      print(providerId)
       found = collection.find_one(query)
       return found
 

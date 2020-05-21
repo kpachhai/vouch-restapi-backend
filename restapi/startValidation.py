@@ -17,8 +17,11 @@ class StartValidation:
         params = doc["params"]
         db = MongoDatabase()
 
-        provider = db.get_provider_from_id(doc["providerId"])
+        # provider = db.get_provider_from_id(doc["providerId"])
+        # print(provider)
 
+        provider = db.get_provider_by_apikey(doc["providerId"])
+        print(provider)
         
         transaction = db.create_transaction(doc["validationType"], doc["providerId"], params)
         resp.media = transaction
