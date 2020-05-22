@@ -1,4 +1,4 @@
-# Vouch dApp Rest API
+# Vouch Rest API
 
 To start, clone vouch-restapi-backend repo
 ```
@@ -6,61 +6,53 @@ git clone https://github.com/tuum-tech/vouch-restapi-backend.git;
 cd vouch-restapi-backend;
 ```
 # Prerequisites
+- Python3 is needed
+```
+brew install python3 // On Mac
+sudo apt-get install python3 // On linux
+```
+- Virtualenv
+```
+pip3 install virtualenv
+```
 
-Before start, you have to initiate vouch-redis-broker https://github.com/tuum-tech/vouch-redis-broker
-
-0. Install Wheel (If required because of an error using Step#1 'Could not build wheels for falcon, since package 'wheel' is not installed.')
+# Setup
+Before you start, you have to initiate vouch-redis-broker https://github.com/tuum-tech/vouch-redis-broker
+- Create a python virtual environment
 ```
-pip install wheel 
+virtualenv -p `which python3` venv
 ```
-
-1. Install Falcon API 
+- Activate the virtualenv environment
 ```
-pip install falcon
-pip install falcon-cors
+source venv/bin/activate
 ```
-2. Install Gunicorn (Only on Mac or Linuc)
+- Install the dependencies
 ```
-pip install gunicorn
+pip install -r requirements.txt
 ```
-3. Install Waitress (Only on Windows)
-```
-pip install waitress
-```
-4. Install PyMongo
-```
-pip install pymongo
-```
-5. Create Database instance
+- Run mongodb
 ```
 cd tools
-.\mongodb.sh
+./mongodb.sh
 ```
 
-# Run the service
-
-On Windows
+# Run
+- Start API server
 ```
-waitress-serve --port=8080 restapi:api
-```
-
-On Mac or Linux
-```
-gunicorn restapi:api --bind='192.168.0.104:8080' (Whitelisted Host in Vouch Capsule App)
-gunicorn restapi:api --bind='localhost:8080'
+waitress-serve --port=8080 restapi:api // On Windows
+gunicorn restapi:api --bind='0.0.0.0:8080' // On mac/linux
 ```
 
-To get all providers from a validationType, execute this exemple
+# Verify
+- To get all providers from a validationType, run the following:
 ```
-curl "http://localhost:8080/providers?validationType=email"
+curl http://localhost:8080/providers?validationType=email
 ```
-
-To create a transaction, execute this example
+- To create a transaction, run the following:
 ```
 curl -H 'Content-Type: application/json' -H 'Accept:application/json' --data '{\"validationType\":\"email\", \"providerId\":\"USE A VALID ID FROM A PROVIDER IN THE COLLECTION\" \"params\":{\"didId\":\"did:elastos:1234567890\",\"email\":\"test@test.com\"}}' http://localhost:8080/start
 ```
-
-To get all transactions from a DidId, execute this exemple
+- To get all transactions from a DidId, run the following:
 ```
 curl "http://localhost:8080/get?didid=did:elastos:1234567890"
 ```
