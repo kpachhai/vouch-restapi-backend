@@ -6,49 +6,19 @@ git clone https://github.com/tuum-tech/vouch-restapi-backend.git;
 cd vouch-restapi-backend;
 ```
 # Prerequisites
-
-Before start, you have to initiate vouch-redis-broker https://github.com/tuum-tech/vouch-redis-broker
-
-0. Install Wheel (If required because of an error using Step#1 'Could not build wheels for falcon, since package 'wheel' is not installed.')
+- Install required packages[Only needs to be done once]
 ```
-pip install wheel 
-```
-
-1. Install Falcon API 
-```
-pip install falcon
-pip install falcon-cors
-```
-2. Install Gunicorn (Only on Mac or Linuc)
-```
-pip install gunicorn
-```
-3. Install Waitress (Only on Windows)
-```
-pip install waitress
-```
-4. Install PyMongo
-```
-pip install pymongo
-```
-5. Create Database instance
-```
-cd tools
-.\mongodb.sh
+./install.sh
 ```
 
 # Run the service
 
-On Windows
+- Start API server
 ```
-waitress-serve --port=8080 restapi:api
+./run.sh start
 ```
 
-On Mac or Linux
-```
-gunicorn restapi:api --bind='192.168.0.104:8080' (Whitelisted Host in Vouch Capsule App)
-gunicorn restapi:api --bind='localhost:8080'
-```
+# Verify
 
 To get all providers from a validationType, execute this exemple
 ```
