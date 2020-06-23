@@ -15,7 +15,7 @@ class ProvidersCollection(BaseResource):
     def on_get(self, req, res):
         rows = Provider.objects()
         if rows:
-            obj = [each.as_dict() for each in rows]
+            obj = [each.as_readonly_dict() for each in rows]
             self.on_success(res, obj)
         else:
             raise AppError()

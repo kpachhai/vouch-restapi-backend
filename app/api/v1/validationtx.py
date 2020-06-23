@@ -1,4 +1,4 @@
-from app import log, redisBroker
+from app import log , redisBroker
 from app.api.common import BaseResource
 from app.model import ValidationTx, ValidationStatus, Provider
 from app.errors import (
@@ -23,7 +23,7 @@ class ValidationsFromDid(BaseResource):
 
 class ValidationFromId(BaseResource):
     """
-    Handle for endpoint: /v1/validationtx/id/{did}
+    Handle for endpoint: /v1/validationtx/confirmation_id/{did}
     """
 
     def on_get(self, req, res, confirmation_id):
@@ -43,15 +43,20 @@ class CreateValidation(BaseResource):
         data = req.media
 
         providerId = data["provider"]
-
+        LOG.info("provider id {0}".format(providerId))
         providersRows = Provider.objects(id=providerId)
-        if not providersRows:
+        
+        if providersRows:
+            LOG.info("found")
             provider = [each.as_dict() for each in providersRows][0]
         else:
+            LOG.info("Provider not found")
             raise AppError()
 
+        
+
         row = ValidationTx(
-            did= data["didId"].replace("did:elastos:", "").split("#")[0],
+            did= data["did"].replace("did:elastos:", "").split("#")[0],
             provider=data["provider"],
             validationType=data["validationType"],
             requestParams=data["requestParams"],
@@ -59,13 +64,16 @@ class CreateValidation(BaseResource):
         )
         row.save()
 
+        LOG.info("Confirmation ID {0}".format(str(row.id)))
+
         if data["validationType"] == "email":
            doc = {
                'transactionId': '{}'.format(row.id), 
                'email': row.requestParams["email"],
-               'did': row.did
+               'did': data["did"]
             }
-           redisBroker.send_email_validation(doc, provider.apiKey)
+           LOG.info(doc)
+           redisBroker.send_email_validation(doc, provider["apiKey"])
 
         
         result = {

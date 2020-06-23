@@ -14,6 +14,7 @@ class ValidationTx(Document):
     validationType = StringField(max_length=32)
     requestParams = DictField()
     status = StringField(max_length=32)
+    reason = StringField(max_length=128)
     verifiedCredential = DictField()
     created = DateTimeField()
     modified = DateTimeField(default=datetime.datetime.now)
@@ -29,6 +30,7 @@ class ValidationTx(Document):
             "validationType": self.validationType,
             "requestParams": self.requestParams,
             "status": self.status,
+            "reason": self.reason,
             "verifiedCredential": self.verifiedCredential,
             "created": str(self.created),
             "modified": str(self.modified)

@@ -15,13 +15,20 @@ class Provider(Document):
 
     def as_dict(self):
         return {
-            "id": str(self.id),
+            "id": self.id,
             "name": self.name,
             "logo": self.logo,
             "apiKey": self.apikey,
             "validationTypes": self.validationTypes,
             "created": str(self.created),
             "modified": str(self.modified)
+        }
+
+    def as_readonly_dict(self):
+        return {
+            "name": self.name,
+            "logo": self.logo,
+            "validationTypes": self.validationTypes,
         }
 
     def save(self, *args, **kwargs):
