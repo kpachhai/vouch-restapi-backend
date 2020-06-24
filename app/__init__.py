@@ -1,7 +1,7 @@
 import falcon
 import threading
 from falcon_cors import CORS
-from app import log, config, redisBroker
+from app import log, config, redisBroker, seedDatabase
 from app.middleware import AuthMiddleware
 from app.api.common import base
 from app.api.v1 import providers, validationtx
@@ -53,6 +53,7 @@ application = App(middleware=[
     AuthMiddleware(),
 ])
 
+seedDatabase.seed_database()
 
 th = threading.Thread(target=redisBroker.monitor_redis)
 th.setDaemon(True)
