@@ -65,9 +65,8 @@ def monitor_redis():
                 transaction_row.save()
                 
                 LOG.info(f'Response processed with success')
-            except:
-                LOG.info(f'Response Error')
-                print(sys.exc_info())
+            except Exception as e:
+                LOG.info(f'Response Error: {e}')
                 pass
     
 

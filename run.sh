@@ -2,11 +2,15 @@
 
 function start () {
     docker container stop vouch-mongo || true && docker container rm -f vouch-mongo || true
+    docker container stop vouch-redis || true && docker container rm -f vouch-redis || true
     docker run -d --name vouch-mongo                     \
         -e MONGO_INITDB_ROOT_USERNAME=mongoadmin          \
         -e MONGO_INITDB_ROOT_PASSWORD=vouchmongo         \
-        -p 27018:27017                                      \
+        -p 27018:27017                                    \
         mongo
+    docker run -d --name vouch-redis                       \
+        -p 6379:6379                                      \
+        redis
 
     virtualenv -p `which python3` .venv
     source .venv/bin/activate
@@ -24,7 +28,7 @@ function start () {
     ;;
     esac
 
-    gunicorn -b 0.0.0.0:8000 --reload app.main:application
+    gunicorn -b 0.0.0.0:8080 --reload app:application
 }
 
 function stop () {

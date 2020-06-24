@@ -12,27 +12,40 @@ cd vouch-restapi-backend;
 ```
 
 # Run the service
-
+- Copy example environment file
+```
+cp .env.example .env
+```
+- Modify .env file with your own values
 - Start API server
 ```
 ./run.sh start
 ```
 
 # Verify
-
-To get all providers from a validationType, execute this exemple
+- To check whether the API is working:
 ```
-curl "http://localhost:8080/providers?validationType=email"
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080
+```
+
+To get all providers from a validationType:
+```
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/providers
 ```
 
 To create a transaction, execute this example
 ```
-curl -H 'Content-Type: application/json' -H 'Accept:application/json' --data '{\"validationType\":\"email\", \"providerId\":\"USE A VALID ID FROM A PROVIDER IN THE COLLECTION\" \"params\":{\"didId\":\"did:elastos:1234567890\",\"email\":\"test@test.com\"}}' http://localhost:8080/start
+curl -XPOST  -H "Authorization: vouch-restapi-secret-key" -H "Content-Type: application/json" -H "Accept: application/json" -d @test/emailValidation.json http://localhost:8080/v1/validationtx/create
 ```
 
 To get all transactions from a DidId, execute this exemple
 ```
-curl "http://localhost:8080/get?didid=did:elastos:1234567890"
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/did/iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c
+```
+
+To get transaction details using confirmationID, execute this example
+```
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5ef3a5440136e7bd17775e23
 ```
 
 

@@ -23,7 +23,7 @@ class ValidationsFromDid(BaseResource):
 
 class ValidationFromId(BaseResource):
     """
-    Handle for endpoint: /v1/validationtx/confirmation_id/{did}
+    Handle for endpoint: /v1/validationtx/confirmation_id/{confirmation_id}
     """
 
     def on_get(self, req, res, confirmation_id):
@@ -56,7 +56,7 @@ class CreateValidation(BaseResource):
         
 
         row = ValidationTx(
-            did= data["did"].replace("did:elastos:", "").split("#")[0],
+            did=data["did"].replace("did:elastos:", "").split("#")[0],
             provider=data["provider"],
             validationType=data["validationType"],
             requestParams=data["requestParams"],
