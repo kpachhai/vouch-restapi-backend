@@ -2,6 +2,7 @@ import falcon
 import threading
 from falcon_cors import CORS
 from app import log, config, redisBroker
+from app.middleware import AuthMiddleware
 from app.api.common import base
 from app.api.v1 import providers, validationtx
 from app.model import provider
@@ -46,7 +47,11 @@ cors = CORS(
     allow_all_origins=True,
     allow_all_headers=True,
     allow_all_methods=True)
-application = App(middleware=[cors.middleware])
+LOG.info("Initializing the Falcon REST API service...")
+application = App(middleware=[
+    cors.middleware,
+    AuthMiddleware(),
+])
 
 
 th = threading.Thread(target=redisBroker.monitor_redis)

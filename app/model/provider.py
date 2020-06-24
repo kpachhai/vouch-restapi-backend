@@ -15,7 +15,7 @@ class Provider(Document):
 
     def as_dict(self):
         return {
-            "id": self.id,
+            "id": str(self.id),
             "name": self.name,
             "logo": self.logo,
             "apiKey": self.apikey,
@@ -26,6 +26,7 @@ class Provider(Document):
 
     def as_readonly_dict(self):
         return {
+            "id": str(self.id),
             "name": self.name,
             "logo": self.logo,
             "validationTypes": self.validationTypes,
