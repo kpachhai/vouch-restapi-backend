@@ -1,6 +1,7 @@
 from app import log , redisBroker
 from app.api.common import BaseResource
 from app.model import ValidationTx, ValidationStatus, Provider
+from datetime import datetime, timedelta
 from app.errors import (
     AppError,
 )
@@ -52,7 +53,9 @@ class CreateValidation(BaseResource):
             LOG.info("Provider not found")
             raise AppError(description="Provider not found for the given ID")
 
-        
+        if self.is_transaction_already_sended(data):
+            raise AppError(description="A similar request was already submitted in the last 10 minutes")
+
 
         row = ValidationTx(
             did=data["did"].replace("did:elastos:", "").split("#")[0],
@@ -77,7 +80,21 @@ class CreateValidation(BaseResource):
         
         result = row.as_dict()
         self.on_success(res, result)
-
+    
+    def is_transaction_already_sended(self, data):
+        time = datetime.now() - timedelta(minutes=10)
+        rows = ValidationTx.objects(did=data["did"].replace("did:elastos:", "").split("#")[0], 
+                                    validationType=data["validationType"],
+                                    provider=data["provider"],
+                                    modified__gte=time )
+        if rows:
+           print("rows found") 
+           for row in rows:
+               obj = row.as_dict()
+               print("row id {}".format(obj["id"])) 
+               if obj["requestParams"] == data["requestParams"]:
+                  return True
+           return False 
 class SetIsSavedOnProfile(BaseResource):
     """
     Handle for endpoint: /v1/validationtx/is_saved/confirmation_id/{confirmation_id}
