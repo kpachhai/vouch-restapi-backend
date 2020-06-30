@@ -18,15 +18,14 @@ class ProvidersCollection(BaseResource):
             obj = [each.as_readonly_dict() for each in rows]
             self.on_success(res, obj)
         else:
-            raise AppError()
+            raise AppError(description="Cannot retrieve providers from the database")
 
 class ProvidersFromValidationTypeCollection(BaseResource):
     """
-    Handle for endpoint: /v1/providers/validationtype/{validationType}
+    Handle for endpoint: /v1/providers/validationType/{validationType}
     """
 
     def on_get(self, req, res, validationType):
-        print(" enter /v1/providers/validationtype/")
         rows = Provider.objects()
         if rows:
             response = []
@@ -36,5 +35,5 @@ class ProvidersFromValidationTypeCollection(BaseResource):
                 
             self.on_success(res, response)
         else:
-            raise AppError()
+            raise AppError(description="Cannot retrieve providers for the given validationType")
 

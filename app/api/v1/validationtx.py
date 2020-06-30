@@ -19,7 +19,7 @@ class ValidationsFromDid(BaseResource):
             obj = [each.as_dict() for each in rows]
             self.on_success(res, obj)
         else:
-            raise AppError()
+            raise AppError(description="Cannot retrieve requests for the given did")
 
 class ValidationFromId(BaseResource):
     """
@@ -32,7 +32,7 @@ class ValidationFromId(BaseResource):
             obj = [each.as_dict() for each in rows]
             self.on_success(res, obj)
         else:
-            raise AppError()
+            raise AppError(description="Cannot retrieve requests for the given confirmation ID")
 
 class CreateValidation(BaseResource):
     """
@@ -40,11 +40,7 @@ class CreateValidation(BaseResource):
     """
 
     def on_post(self, req, res):
-        print("enter /v1/validationtx/create")
-
         data = req.media
-        print("get data")
-        print(data)
         providerId = data["provider"]
         LOG.info("provider id {0}".format(providerId))
         providersRows = Provider.objects(id=providerId)
@@ -54,7 +50,7 @@ class CreateValidation(BaseResource):
             provider = [each.as_dict() for each in providersRows][0]
         else:
             LOG.info("Provider not found")
-            raise AppError()
+            raise AppError(description="Provider not found for the given ID")
 
         
 
