@@ -11,8 +11,8 @@ class AuthMiddleware(object):
         if prefetch_token:
             res.complete = True
             return True
-
-        token = req.get_header('authorization')
+        
+        token = req.get_header('Authorization')
 
         if token is None:
             description = 'Please provide an auth token as part of the request'
