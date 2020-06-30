@@ -9,13 +9,10 @@ class AuthMiddleware(object):
     def process_request(self, req, res):
         prefetch_token = req.get_header('ACCESS-CONTROL-REQUEST-METHOD')
         if prefetch_token:
-            print("prefetch")
             res.complete = True
             return True
         
         token = req.get_header('Authorization')
-        print(token)
-
 
         if token is None:
             description = 'Please provide an auth token as part of the request'
@@ -39,7 +36,6 @@ class AuthMiddleware(object):
         ):
             # NOTE(kgriffs): This is a CORS preflight request. Patch the
             #   response accordingly.
-
             allow = resp.get_header('Allow')
             resp.delete_header('Allow')
 

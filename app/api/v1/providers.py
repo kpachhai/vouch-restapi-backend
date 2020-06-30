@@ -22,11 +22,10 @@ class ProvidersCollection(BaseResource):
 
 class ProvidersFromValidationTypeCollection(BaseResource):
     """
-    Handle for endpoint: /v1/providers/validationtype/{validationType}
+    Handle for endpoint: /v1/providers/validationType/{validationType}
     """
 
     def on_get(self, req, res, validationType):
-        print(" enter /v1/providers/validationtype/")
         rows = Provider.objects()
         if rows:
             response = []

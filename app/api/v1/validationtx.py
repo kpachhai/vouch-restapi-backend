@@ -40,11 +40,7 @@ class CreateValidation(BaseResource):
     """
 
     def on_post(self, req, res):
-        print("enter /v1/validationtx/create")
-
         data = req.media
-        print("get data")
-        print(data)
         providerId = data["provider"]
         LOG.info("provider id {0}".format(providerId))
         providersRows = Provider.objects(id=providerId)
