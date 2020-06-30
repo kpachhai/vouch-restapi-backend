@@ -20,3 +20,17 @@ class ProvidersCollection(BaseResource):
         else:
             raise AppError()
 
+class ProvidersFromValidationTypeCollection(BaseResource):
+    """
+    Handle for endpoint: /v1/providers/valiationtype/{validationType}
+    """
+
+    def on_get(self, req, res, validationType):
+        rows = Provider.objects(validationTypes__contains=validationType)
+        if rows:
+            obj = [each.as_readonly_dict() for each in rows]
+
+            self.on_success(res, obj)
+        else:
+            raise AppError()
+

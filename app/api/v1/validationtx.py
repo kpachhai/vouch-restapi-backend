@@ -79,8 +79,6 @@ class CreateValidation(BaseResource):
            redisBroker.send_email_validation(doc, provider["apiKey"])
 
         
-        result = {
-            "confirmation_id": str(row.id)
-        }
+        result = row.as_dict()
         self.on_success(res, result)
 

@@ -23,6 +23,9 @@ class App(falcon.API):
         #Retrieves all providers
         self.add_route("/v1/providers", providers.ProvidersCollection())
 
+        #Retrieves providers from validation type
+        self.add_route("/v1/providers/validationtype/{validationType}", providers.ProvidersCollection())
+
         #Retrieves all transactions according to did
         self.add_route("/v1/validationtx/did/{did}", validationtx.ValidationsFromDid())
 
