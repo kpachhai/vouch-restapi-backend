@@ -31,6 +31,9 @@ class App(falcon.API):
 
         # Retrieves transaction according to confirmation ID
         self.add_route("/v1/validationtx/confirmation_id/{confirmation_id}", validationtx.ValidationFromId())
+
+        # Update isSavedOnProfile information
+        self.add_route("/v1/validationtx/is_saved/confirmation_id/{confirmation_id}", validationtx.SetIsSavedOnProfile())
         
         # Creates a new transaction
         self.add_route("/v1/validationtx/create", validationtx.CreateValidation())

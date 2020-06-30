@@ -82,3 +82,20 @@ class CreateValidation(BaseResource):
         result = row.as_dict()
         self.on_success(res, result)
 
+class SetIsSavedOnProfile(BaseResource):
+    """
+    Handle for endpoint: /v1/validationtx/is_saved/confirmation_id/{confirmation_id}
+    """
+
+    def on_post(self, req, res, confirmation_id):
+        print("enter /v1/validationtx/is_saved/confirmation_id/{}".format(confirmation_id))
+        
+        rows = ValidationTx.objects(id=confirmation_id)
+        row =rows[0]
+        row.isSavedOnProfile = True
+        row.save()
+        
+        
+        result = row.as_dict()
+        self.on_success(res, result)
+

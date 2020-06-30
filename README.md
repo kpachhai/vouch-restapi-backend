@@ -48,5 +48,10 @@ To get transaction details using confirmationID, execute this example
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5ef3a5440136e7bd17775e23
 ```
 
+To update isSavedOnProfile transaction information, execute this example
+```
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5ef3a5440136e7bd17775e23
+```
+
 
 

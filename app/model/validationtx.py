@@ -1,6 +1,6 @@
 import datetime
 
-from mongoengine import StringField, DictField, DateTimeField, Document
+from mongoengine import StringField, DictField, DateTimeField, Document, BooleanField
 
 class ValidationStatus(object):
       PENDING = "Pending"
@@ -16,6 +16,7 @@ class ValidationTx(Document):
     status = StringField(max_length=32)
     reason = StringField(max_length=128)
     verifiedCredential = DictField()
+    isSavedOnProfile=BooleanField()
     created = DateTimeField()
     modified = DateTimeField(default=datetime.datetime.now)
 
@@ -23,6 +24,8 @@ class ValidationTx(Document):
         return str(self.as_dict())
 
     def as_dict(self):
+        if not self.isSavedOnProfile:
+           self.isSavedOnProfile = False
         return {
             "id": str(self.id),
             "did": self.did,
@@ -31,6 +34,7 @@ class ValidationTx(Document):
             "requestParams": self.requestParams,
             "status": self.status,
             "reason": self.reason,
+            "isSavedOnProfile": self.isSavedOnProfile,
             "verifiedCredential": self.verifiedCredential,
             "created": str(self.created),
             "modified": str(self.modified)
