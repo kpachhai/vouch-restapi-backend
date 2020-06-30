@@ -18,7 +18,7 @@ class ProvidersCollection(BaseResource):
             obj = [each.as_readonly_dict() for each in rows]
             self.on_success(res, obj)
         else:
-            raise AppError()
+            raise AppError(description="Cannot retrieve providers from the database")
 
 class ProvidersFromValidationTypeCollection(BaseResource):
     """
@@ -35,5 +35,5 @@ class ProvidersFromValidationTypeCollection(BaseResource):
                 
             self.on_success(res, response)
         else:
-            raise AppError()
+            raise AppError(description="Cannot retrieve providers for the given validationType")
 

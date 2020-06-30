@@ -54,7 +54,7 @@ def monitor_redis():
                 if transaction_row.provider != str(provider_row.id):
                    raise RuntimeError("ERROR: Transaction provider is different than response") 
 
-                if doc["response"] != ValidationStatus.SUCCEDED and doc["response"] != ValidationStatus.FAILED:
+                if doc["response"] != ValidationStatus.APPROVED and doc["response"] != ValidationStatus.REJECTED:
                    raise RuntimeError("ERROR: Response status invalid")
 
 
