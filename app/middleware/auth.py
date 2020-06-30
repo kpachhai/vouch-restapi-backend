@@ -7,6 +7,10 @@ from app.errors import UnauthorizedError
 class AuthMiddleware(object):
 
     def process_request(self, req, res):
+        prefetch_token = req.get_header('ACCESS-CONTROL-REQUEST-METHOD')
+        if prefetch_token:
+            return True
+        
         token = req.get_header('Authorization')
 
         if token is None:
