@@ -53,35 +53,39 @@ class CreateValidation(BaseResource):
             LOG.info("Provider not found")
             raise AppError(description="Provider not found for the given ID")
 
-        if self.is_transaction_already_sended(data):
-            raise AppError(description="A similar request was already submitted in the last 10 minutes")
+        transactionSended = self.transaction_already_sended(data)
+        result = {}
+        if transactionSended:
+            result["duplicate"] = True
+            result["validationtx"] = transactionSended
+        else:
+            result["duplicate"] = False
+            row = ValidationTx(
+                did=data["did"].replace("did:elastos:", "").split("#")[0],
+                provider=data["provider"],
+                validationType=data["validationType"],
+                requestParams=data["requestParams"],
+                status=ValidationStatus.PENDING
+            )
+            row.save()
 
+            LOG.info("Confirmation ID {0}".format(str(row.id)))
 
-        row = ValidationTx(
-            did=data["did"].replace("did:elastos:", "").split("#")[0],
-            provider=data["provider"],
-            validationType=data["validationType"],
-            requestParams=data["requestParams"],
-            status=ValidationStatus.PENDING
-        )
-        row.save()
-
-        LOG.info("Confirmation ID {0}".format(str(row.id)))
-
-        if data["validationType"] == "email":
-           doc = {
-               'transactionId': '{}'.format(row.id), 
-               'email': row.requestParams["email"],
-               'did': data["did"]
-            }
-           LOG.info(doc)
-           redisBroker.send_email_validation(doc, provider["apiKey"])
-
+            if data["validationType"] == "email":
+                doc = {
+                    'transactionId': '{}'.format(row.id), 
+                    'email': row.requestParams["email"],
+                    'did': data["did"]
+                    }
+                LOG.info(doc)
+                redisBroker.send_email_validation(doc, provider["apiKey"])
+                
+            result["validationtx"] = row.as_dict()
         
-        result = row.as_dict()
+        
         self.on_success(res, result)
     
-    def is_transaction_already_sended(self, data):
+    def transaction_already_sended(self, data):
         time = datetime.now() - timedelta(minutes=10)
         rows = ValidationTx.objects(did=data["did"].replace("did:elastos:", "").split("#")[0], 
                                     validationType=data["validationType"],
@@ -93,8 +97,8 @@ class CreateValidation(BaseResource):
                obj = row.as_dict()
                print("row id {}".format(obj["id"])) 
                if obj["requestParams"] == data["requestParams"]:
-                  return True
-           return False 
+                  return obj
+        return None    
 class SetIsSavedOnProfile(BaseResource):
     """
     Handle for endpoint: /v1/validationtx/is_saved/confirmation_id/{confirmation_id}
