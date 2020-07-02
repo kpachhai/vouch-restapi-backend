@@ -35,7 +35,7 @@ curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/provi
 
 To create a transaction, execute this example
 ```
-curl -XPOST  -H "Authorization: vouch-restapi-secret-key" -H "Content-Type: application/json" -H "Accept: application/json" -d @test/emailValidation.json http://localhost:8080/v1/validationtx/create
+curl -X POST -H "Authorization: vouch-restapi-secret-key" -H "Content-Type: application/json" -H "Accept: application/json" -d @test/emailValidation.json http://localhost:8080/v1/validationtx/create
 ```
 
 To get all transactions from a DidId, execute this exemple
@@ -50,7 +50,7 @@ curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/valid
 
 To update isSavedOnProfile transaction information, execute this example
 ```
-curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5ef3a5440136e7bd17775e23
+curl -X POST "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/is_saved/confirmation_id/5ef3a5440136e7bd17775e23
 ```
 
 
