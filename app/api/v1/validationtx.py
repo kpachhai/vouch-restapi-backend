@@ -65,7 +65,8 @@ class CreateValidation(BaseResource):
                 provider=data["provider"],
                 validationType=data["validationType"],
                 requestParams=data["requestParams"],
-                status=ValidationStatus.PENDING
+                status=ValidationStatus.PENDING,
+                isSavedOnProfile=False
             )
             row.save()
 
