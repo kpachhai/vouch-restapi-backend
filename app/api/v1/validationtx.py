@@ -53,11 +53,11 @@ class CreateValidation(BaseResource):
             LOG.info("Provider not found")
             raise AppError(description="Provider not found for the given ID")
 
-        transactionSended = self.transaction_already_sended(data)
+        transactionSent = self.transaction_already_sent(data)
         result = {}
-        if transactionSended:
+        if transactionSent:
             result["duplicate"] = True
-            result["validationtx"] = transactionSended
+            result["validationtx"] = transactionSent
         else:
             result["duplicate"] = False
             row = ValidationTx(
@@ -86,20 +86,19 @@ class CreateValidation(BaseResource):
         
         self.on_success(res, result)
     
-    def transaction_already_sended(self, data):
+    def transaction_already_sent(self, data):
         time = datetime.now() - timedelta(minutes=10)
         rows = ValidationTx.objects(did=data["did"].replace("did:elastos:", "").split("#")[0], 
                                     validationType=data["validationType"],
                                     provider=data["provider"],
                                     modified__gte=time )
         if rows:
-           print("rows found") 
            for row in rows:
                obj = row.as_dict()
-               print("row id {}".format(obj["id"])) 
                if obj["requestParams"] == data["requestParams"]:
                   return obj
         return None    
+
 class SetIsSavedOnProfile(BaseResource):
     """
     Handle for endpoint: /v1/validationtx/is_saved/confirmation_id/{confirmation_id}

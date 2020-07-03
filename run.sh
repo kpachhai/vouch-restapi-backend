@@ -4,6 +4,7 @@ function start () {
     docker container stop vouch-mongo || true && docker container rm -f vouch-mongo || true
     docker container stop vouch-redis || true && docker container rm -f vouch-redis || true
     docker run -d --name vouch-mongo                     \
+        -v ${PWD}/.mongodb-data:/data/db                         \
         -e MONGO_INITDB_ROOT_USERNAME=mongoadmin          \
         -e MONGO_INITDB_ROOT_PASSWORD=vouchmongo         \
         -p 27018:27017                                    \

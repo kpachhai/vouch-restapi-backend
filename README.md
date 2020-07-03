@@ -17,6 +17,10 @@ cd vouch-restapi-backend;
 cp .env.example .env
 ```
 - Modify .env file with your own values
+- [OPTIONAL]: If you want to remove previous mongodb data and start fresh, remove the mongodb directory
+```
+rm -rf .mongodb-data
+```
 - Start API server
 ```
 ./run.sh start

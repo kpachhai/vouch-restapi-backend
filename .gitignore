@@ -1,20 +1,11 @@
-package-lock.json
-node_modules/
 .DS_Store
 **/.DS_Store
-
-**/didstore
-**/.cache.did.elastos
-**/lib/__pycache__
 
 # Environments
 .env
 .venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+.env.prod
+localrun.sh
 
 # pycharm
 __pycache__
@@ -25,24 +16,6 @@ __pycache__
 
 # idea
 .idea/
-
-# tools
-tools/.postgres-data
-
-# static files
-www/
-
-# logs
-elastos-nucleus.log*
-queries.log*
-
-# Uploaded files
-documents/user_files
-
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
 
 localrun.sh
 
