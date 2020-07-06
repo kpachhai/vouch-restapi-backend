@@ -29,7 +29,7 @@ rm -rf .mongodb-data
 # Verify
 - To check whether the API is working:
 ```
-curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080
+curl http://localhost:8080
 ```
 
 To get all providers from a validationType:
@@ -57,5 +57,9 @@ To update isSavedOnProfile transaction information, execute this example
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5ef3a5440136e7bd17775e23
 ```
 
-
+# Deploy to production
+- Deploy
+```
+eb deploy
+```
 
