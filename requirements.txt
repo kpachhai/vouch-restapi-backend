@@ -1,0 +1,8 @@
+falcon==2.0.0
+falcon-cors==1.1.7
+gunicorn==20.0.4
+requests==2.23.0
+mongoengine==0.20.0
+waitress==1.4.3
+redis==3.5.2
+python-decouple==3.3
