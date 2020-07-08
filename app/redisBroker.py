@@ -8,7 +8,7 @@ from app.model import ValidationTx, ValidationStatus, Provider
 
 LOG = log.get_logger()
 
-broker =  redis.Redis(host = config.REDIS['HOST'], port = config.REDIS['PORT'])
+broker = redis.Redis(host = config.REDIS['HOST'], port = config.REDIS['PORT'], password = config.REDIS['PASSWORD'])
 
 
 def send_email_validation(doc, apiKey):
