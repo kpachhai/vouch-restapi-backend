@@ -13,12 +13,12 @@ SECRET_KEY = config('SECRET_KEY', default='vouch-restapi-secret-key', cast=str)
 MONGO = {
     "DATABASE": config('MONGO_DATABASE', default='vouchdb', cast=str),
     "HOST": config('MONGO_HOST', default='localhost', cast=str),
-    "PORT": config('MONGO_PORT', default='27018', cast=int),
+    "PORT": config('MONGO_PORT', default=27018, cast=int),
     "USERNAME": config('MONGO_USERNAME', default='mongoadmin', cast=str),
     "PASSWORD": config('MONGO_PASSWORD', default='vouchmongo', cast=str)
 }
 
 REDIS = {
     "HOST": config('REDIS_HOST', default='localhost', cast=str),
-    "PORT": config('REDIS_PORT', default='6379', cast=int)
+    "PORT": config('REDIS_PORT', default=6379, cast=int)
 }
