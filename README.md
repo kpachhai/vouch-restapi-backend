@@ -50,7 +50,7 @@ curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/valid
 
 To update isSavedOnProfile transaction information, execute this example
 ```
-curl -X POST "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/is_saved/confirmation_id/5ef3a5440136e7bd17775e23
+curl -X POST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/is_saved/confirmation_id/5ef3a5440136e7bd17775e23
 ```
 
 
