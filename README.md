@@ -6,6 +6,7 @@ git clone https://github.com/tuum-tech/vouch-restapi-backend.git;
 cd vouch-restapi-backend;
 ```
 # Prerequisites
+- Install docker at [https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)
 - Install required packages[Only needs to be done once]
 ```
 ./install.sh
