@@ -63,3 +63,15 @@ curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/valid
 eb deploy
 ```
 
+# How to be a validator
+- Currently, there is a Redis Broker that each validator will need to connect to and subscribe to different channels. There is a specific channel that each validator will be subscribed to where the user data to be verified are pushed. The job 
+of the validator is to listen to these incoming messages, process the request, validate appropriate data, sign the data with their own DID, generate the verifiable credentials and then pass the verified credentials back to another redis channel that 
+Vouch REST API is subscribed to. This is how the Vouch REST API and Validators communicate with each other. 
+- Check out an example of a DID Email Validator service provided by Tuum Tech at [https://github.com/tuum-tech/did-email-validator](https://github.com/tuum-tech/did-email-validator)
+- For testing purposes, you can append to .env file with the following environment variables: PROVIDER2_NAME, PROVIDER2_LOGO_PATH, PROVIDER2_API_KEY, PROVIDER2_VALIDATION_TYPES
+- Create your own validator service(written in any programming language - Choice is up to you)
+- There are two steps to being a validator for Vouch:
+    - Create a validator service that will take certain data(that contains user DID and user data) and then generate a verifiable credential using own's DID
+    - Send the verified credentials to a designated channel. Currently, only the following channels are supported:
+        - "email-validator-response": For sending verifiable credential that has someone's email address verified
+ 
