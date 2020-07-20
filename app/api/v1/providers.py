@@ -7,6 +7,7 @@ from app.errors import (
 
 LOG = log.get_logger()
 
+
 class ProvidersCollection(BaseResource):
     """
     Handle for endpoint: /v1/providers
@@ -20,6 +21,7 @@ class ProvidersCollection(BaseResource):
         else:
             raise AppError(description="Cannot retrieve providers from the database")
 
+
 class ProvidersFromValidationTypeCollection(BaseResource):
     """
     Handle for endpoint: /v1/providers/validationType/{validationType}
@@ -31,9 +33,8 @@ class ProvidersFromValidationTypeCollection(BaseResource):
             response = []
             for row in rows:
                 if validationType in row.validationTypes:
-                   response.append(row.as_readonly_dict())   
-                
+                    response.append(row.as_readonly_dict())
+
             self.on_success(res, response)
         else:
             raise AppError(description="Cannot retrieve providers for the given validationType")
-

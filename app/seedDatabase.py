@@ -3,9 +3,10 @@ from app.model.provider import Provider
 
 LOG = log.get_logger()
 
+
 def seed_database():
     LOG.info("Start seeding Database")
-    
+
     providers = config.PROVIDERS
     for provider in providers:
         name = provider["name"]
@@ -28,3 +29,5 @@ def seed_database():
                 validationTypes=validation_types
             )
             row.save()
+
+    LOG.info("Finished seeding Database")

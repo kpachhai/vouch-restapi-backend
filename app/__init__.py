@@ -43,7 +43,7 @@ class App(falcon.API):
 
 # Connect to mongodb
 LOG.info("Connecting to mongodb...")
-if(config.PRODUCTION):
+if config.PRODUCTION:
     connect(
         config.MONGO['DATABASE'],
         host="mongodb+srv://" + config.MONGO['USERNAME'] + ":" + config.MONGO['PASSWORD'] + "@" +

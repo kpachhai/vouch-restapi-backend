@@ -1,4 +1,4 @@
-from app import log , redisBroker
+from app import log, redisBroker
 from app.api.common import BaseResource
 from app.model import ValidationTx, ValidationStatus, Provider
 from datetime import datetime, timedelta
@@ -22,6 +22,7 @@ class ValidationsFromDid(BaseResource):
         else:
             raise AppError(description="Cannot retrieve requests for the given did")
 
+
 class ValidationFromId(BaseResource):
     """
     Handle for endpoint: /v1/validationtx/confirmation_id/{confirmation_id}
@@ -35,6 +36,7 @@ class ValidationFromId(BaseResource):
         else:
             raise AppError(description="Cannot retrieve requests for the given confirmation ID")
 
+
 class CreateValidation(BaseResource):
     """
     Handle for endpoint: /v1/validationtx/create
@@ -45,7 +47,7 @@ class CreateValidation(BaseResource):
         providerId = data["provider"]
         LOG.info("provider id {0}".format(providerId))
         providersRows = Provider.objects(id=providerId)
-        
+
         if providersRows:
             LOG.info("found")
             provider = [each.as_dict() for each in providersRows][0]
@@ -74,30 +76,30 @@ class CreateValidation(BaseResource):
 
             if data["validationType"] == "email":
                 doc = {
-                    'transactionId': '{}'.format(row.id), 
+                    'transactionId': '{}'.format(row.id),
                     'email': row.requestParams["email"],
                     'did': data["did"]
-                    }
+                }
                 LOG.info(doc)
                 redisBroker.send_email_validation(doc, provider["apiKey"])
-                
+
             result["validationtx"] = row.as_dict()
-        
-        
+
         self.on_success(res, result)
-    
+
     def transaction_already_sent(self, data):
         time = datetime.now() - timedelta(minutes=10)
-        rows = ValidationTx.objects(did=data["did"].replace("did:elastos:", "").split("#")[0], 
+        rows = ValidationTx.objects(did=data["did"].replace("did:elastos:", "").split("#")[0],
                                     validationType=data["validationType"],
                                     provider=data["provider"],
-                                    modified__gte=time )
+                                    modified__gte=time)
         if rows:
-           for row in rows:
-               obj = row.as_dict()
-               if obj["requestParams"] == data["requestParams"]:
-                  return obj
-        return None    
+            for row in rows:
+                obj = row.as_dict()
+                if obj["requestParams"] == data["requestParams"]:
+                    return obj
+        return None
+
 
 class SetIsSavedOnProfile(BaseResource):
     """
@@ -106,13 +108,11 @@ class SetIsSavedOnProfile(BaseResource):
 
     def on_post(self, req, res, confirmation_id):
         print("enter /v1/validationtx/is_saved/confirmation_id/{}".format(confirmation_id))
-        
+
         rows = ValidationTx.objects(id=confirmation_id)
-        row =rows[0]
+        row = rows[0]
         row.isSavedOnProfile = True
         row.save()
-        
-        
+
         result = row.as_dict()
         self.on_success(res, result)
-

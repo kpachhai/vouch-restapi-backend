@@ -26,6 +26,7 @@ REDIS = {
     "PASSWORD": config('REDIS_PASSWORD', default="", cast=str)
 }
 
+
 def get_providers():
     providers = []
     i = 1
@@ -50,6 +51,7 @@ def get_providers():
             providers.append(provider)
         i += 1
     return providers
+
 
 # Retrieve provider details
 PROVIDERS = get_providers()
