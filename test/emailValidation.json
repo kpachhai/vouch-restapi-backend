@@ -1,6 +1,6 @@
 {
     "did": "did:elastos:igZjRKt1HN7toSK3ZPZmNy5NuhfKDhzkUy#primary",
-    "provider": "5ef39424ba4f91fe829ef8b8",
+    "provider": "5f15d4a56681e6fdea7a83cf",
     "validationType": "email",
     "requestParams":{
         "email":"r.t@test.com"

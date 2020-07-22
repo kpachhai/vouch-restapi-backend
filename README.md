@@ -45,17 +45,17 @@ curl -XPOST  -H "Authorization: vouch-restapi-secret-key" -H "Content-Type: appl
 
 To get all transactions from a DidId, execute this exemple
 ```
-curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/did/iouMSXKHNcwdbPzb58pXpmGBDBxrMzfq2c
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/did/igZjRKt1HN7toSK3ZPZmNy5NuhfKDhzkUy
 ```
 
 To get transaction details using confirmationID, execute this example
 ```
-curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5ef3a5440136e7bd17775e23
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5f17a02afbe8980577674011
 ```
 
 To update isSavedOnProfile transaction information, execute this example
 ```
-curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5ef3a5440136e7bd17775e23
+curl -XPOST  -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/is_saved/confirmation_id/5f17a02afbe8980577674011
 ```
 
 # Deploy to production

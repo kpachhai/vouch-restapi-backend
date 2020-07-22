@@ -45,14 +45,11 @@ class CreateValidation(BaseResource):
     def on_post(self, req, res):
         data = req.media
         providerId = data["provider"]
-        LOG.info("provider id {0}".format(providerId))
         providersRows = Provider.objects(id=providerId)
 
         if providersRows:
-            LOG.info("found")
             provider = [each.as_dict() for each in providersRows][0]
         else:
-            LOG.info("Provider not found")
             raise AppError(description="Provider not found for the given ID")
 
         transactionSent = self.transaction_already_sent(data)
@@ -72,15 +69,12 @@ class CreateValidation(BaseResource):
             )
             row.save()
 
-            LOG.info("Confirmation ID {0}".format(str(row.id)))
-
             if data["validationType"] == "email":
                 doc = {
                     'transactionId': '{}'.format(row.id),
                     'email': row.requestParams["email"],
                     'did': data["did"]
                 }
-                LOG.info(doc)
                 redisBroker.send_email_validation(doc, provider["apiKey"])
 
             result["validationtx"] = row.as_dict()
@@ -107,12 +101,13 @@ class SetIsSavedOnProfile(BaseResource):
     """
 
     def on_post(self, req, res, confirmation_id):
-        print("enter /v1/validationtx/is_saved/confirmation_id/{}".format(confirmation_id))
-
+        result = {}
         rows = ValidationTx.objects(id=confirmation_id)
-        row = rows[0]
-        row.isSavedOnProfile = True
-        row.save()
-
-        result = row.as_dict()
+        if rows:
+            row = rows[0]
+            row.isSavedOnProfile = True
+            row.save()
+            result = row.as_dict()
         self.on_success(res, result)
+
+
