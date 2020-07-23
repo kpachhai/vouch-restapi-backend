@@ -20,17 +20,20 @@ class App(falcon.API):
         # Simple endpoint for base
         self.add_route("/", base.BaseResource())
         
-        #Retrieves all providers
+        # Retrieves all providers
         self.add_route("/v1/providers", providers.ProvidersCollection())
 
-        #Retrieves providers from validation type
+        # Retrieves providers from validation type
         self.add_route("/v1/providers/validationType/{validationType}", providers.ProvidersFromValidationTypeCollection())
 
-        #Retrieves all transactions according to did
+        # Retrieves all transactions according to did
         self.add_route("/v1/validationtx/did/{did}", validationtx.ValidationsFromDid())
 
         # Retrieves transaction according to confirmation ID
         self.add_route("/v1/validationtx/confirmation_id/{confirmation_id}", validationtx.ValidationFromId())
+
+        # Retrieves transaction count according to provider ID
+        self.add_route("/v1/validationtx/count/provider_id/{provider_id}", validationtx.ValidationCountFromProvider())
 
         # Update isSavedOnProfile information
         self.add_route("/v1/validationtx/is_saved/confirmation_id/{confirmation_id}", validationtx.SetIsSavedOnProfile())

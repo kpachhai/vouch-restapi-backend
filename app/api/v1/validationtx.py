@@ -36,6 +36,25 @@ class ValidationFromId(BaseResource):
         else:
             raise AppError(description="Cannot retrieve requests for the given confirmation ID")
 
+class ValidationCountFromProvider(BaseResource):
+    """
+    Handle for endpoint: /v1/validationtx/count/provider_id/{provider_id}
+    """
+
+    def on_get(self, req, res, provider_id):
+        rows = ValidationTx.objects(provider=provider_id)
+        if rows:
+            result = {}
+            for row in rows:
+                status = row.status
+                if status in result.keys():
+                    result[status] += 1
+                else:
+                    result[status] = 1 
+            self.on_success(res, result)
+        else:
+            raise AppError(description="Cannot retrieve total request count for the given provider ID")
+
 
 class CreateValidation(BaseResource):
     """

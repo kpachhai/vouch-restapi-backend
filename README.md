@@ -33,27 +33,37 @@ rm -rf .mongodb-data
 curl http://localhost:8080
 ```
 
-To get all providers from a validationType:
+To get all providers:
 ```
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/providers
 ```
 
-To create a transaction, execute this example
+To get providers for a specific validationType for something like "email":
+```
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/providers/validationType/email
+```
+
+To create a transaction:
 ```
 curl -XPOST  -H "Authorization: vouch-restapi-secret-key" -H "Content-Type: application/json" -H "Accept: application/json" -d @test/emailValidation.json http://localhost:8080/v1/validationtx/create
 ```
 
-To get all transactions from a DidId, execute this exemple
+To get all transactions from a DidId:
 ```
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/did/igZjRKt1HN7toSK3ZPZmNy5NuhfKDhzkUy
 ```
 
-To get transaction details using confirmationID, execute this example
+To get transaction details using confirmationID:
 ```
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5f17a02afbe8980577674011
 ```
 
-To update isSavedOnProfile transaction information, execute this example
+To get total transaction count for a specific provider:
+```
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/count/provider_id/5f17a02afbe8980577674011
+```
+
+To update isSavedOnProfile transaction information:
 ```
 curl -XPOST  -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/is_saved/confirmation_id/5f17a02afbe8980577674011
 ```
