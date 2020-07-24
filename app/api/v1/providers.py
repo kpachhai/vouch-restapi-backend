@@ -1,6 +1,7 @@
 from app import log
 from app.api.common import BaseResource
-from app.model.provider import Provider
+#from app.model.provider import Provider
+from app.model import ValidationTx, Provider
 from app.errors import (
     AppError,
 )
@@ -15,9 +16,26 @@ class ProvidersCollection(BaseResource):
 
     def on_get(self, req, res):
         rows = Provider.objects()
+        responseObj = []
         if rows:
-            obj = [each.as_readonly_dict() for each in rows]
-            self.on_success(res, obj)
+            for row in rows:
+                providerId = str(row.id)
+                providerData = row
+
+                providerData.stats = {}
+                validationTxRows = ValidationTx.objects(provider=providerId)
+
+                if validationTxRows:
+                    for validationTxRow in validationTxRows:
+                        status = validationTxRow.status
+                        if status in row.stats.keys():
+                            providerData.stats[status] += 1
+                        else:
+                            providerData.stats[status] = 1 
+
+                responseObj.append(providerData.as_readonly_dict())
+
+            self.on_success(res, responseObj)
         else:
             raise AppError(description="Cannot retrieve providers from the database")
 

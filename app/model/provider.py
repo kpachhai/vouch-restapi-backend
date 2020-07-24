@@ -30,6 +30,7 @@ class Provider(Document):
             "name": self.name,
             "logo": self.logo,
             "validationTypes": self.validationTypes,
+            "stats": self.stats
         }
 
     def save(self, *args, **kwargs):
