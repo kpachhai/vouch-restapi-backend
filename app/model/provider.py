@@ -24,12 +24,13 @@ class Provider(Document):
             "modified": str(self.modified)
         }
 
-    def as_readonly_dict(self):
+    def as_readonly_dict(self, stats={}):
         return {
             "id": str(self.id),
             "name": self.name,
             "logo": self.logo,
             "validationTypes": self.validationTypes,
+            "stats": stats
         }
 
     def save(self, *args, **kwargs):
