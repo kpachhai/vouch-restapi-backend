@@ -37,6 +37,9 @@ class App(falcon.API):
 
         # Update isSavedOnProfile information
         self.add_route("/v1/validationtx/is_saved/confirmation_id/{confirmation_id}", validationtx.SetIsSavedOnProfile())
+
+        # Cancel validation
+        self.add_route("/v1/validationtx/cancel/confirmation_id/{confirmation_id}", validationtx.CancelValidation())
         
         # Creates a new transaction
         self.add_route("/v1/validationtx/create", validationtx.CreateValidation())
