@@ -1,13 +1,20 @@
 import falcon
 import threading
+
 from falcon_cors import CORS
+
+from apscheduler.schedulers.background import BackgroundScheduler
+
 from app import log, config, redisBroker, seedDatabase
 from app.middleware import AuthMiddleware
 from app.api.common import base
 from app.api.v1 import providers, validationtx
+from app.cronjob import resend_validations_without_response
 from app.model import provider
 from app.errors import AppError
 from mongoengine import connect
+
+
 
 LOG = log.get_logger()
 
@@ -72,3 +79,9 @@ seedDatabase.seed_database()
 th = threading.Thread(target=redisBroker.monitor_redis)
 th.setDaemon(True)
 th.start()
+
+# Start cron scheduler
+if not config.PRODUCTION:
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(resend_validations_without_response, 'interval', seconds=config.CRON_INTERVAL)
+    scheduler.start()

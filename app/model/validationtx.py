@@ -3,11 +3,10 @@ import datetime
 from mongoengine import StringField, DictField, DateTimeField, Document, BooleanField
 
 class ValidationStatus(object):
-      SENDING = "Sending"
-      PENDING = "Pending"
-      CANCELING = "Canceling"
+      NEW = "New"
+      IN_PROGRESS = "In progress"
+      CANCELATION_IN_PROGRESS = "Cancelation in progress"
       CANCELED = "Canceled"
-      WAITING_RESPONSE = "Waiting for response"
       APPROVED = "Approved"
       REJECTED = "Rejected"
 

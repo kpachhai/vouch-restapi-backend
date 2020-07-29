@@ -11,15 +11,15 @@ LOG = log.get_logger()
 broker = redis.Redis(host=config.REDIS['HOST'], port=config.REDIS['PORT'], password=config.REDIS['PASSWORD'])
 
 
-def send_email_validation(doc, apiKey):
-    channel = "email-validator-{}".format(apiKey)
+def send_validator_message(doc, apiKey):
+    channel = "validator-{}".format(apiKey)
     broker.publish(channel, json.dumps(doc))
     
 
 
 def monitor_redis():
     LOG.info("Starting response monitor")
-    channel = "email-validator-response"
+    channel = "validator-response"
 
     p = broker.pubsub()
     p.subscribe(channel)
@@ -70,10 +70,10 @@ def response_create(doc):
     if transaction_row.provider != str(provider_row.id):
         raise RuntimeError("ERROR: Transaction provider is different than response")
 
-    if transaction_row.status != ValidationStatus.SENDING:
+    if transaction_row.status != ValidationStatus.NEW:
         raise RuntimeError("ERROR: Transaction already processed")
 
-    transaction_row.status = ValidationStatus.PENDING
+    transaction_row.status = ValidationStatus.IN_PROGRESS
     transaction_row.save()
 
 def response_cancel(doc):
@@ -92,7 +92,7 @@ def response_cancel(doc):
     if transaction_row.provider != str(provider_row.id):
         raise RuntimeError("ERROR: Transaction provider is different than response")
 
-    if transaction_row.status != ValidationStatus.CANCELING:
+    if transaction_row.status != ValidationStatus.CANCELATION_IN_PROGRESS:
         raise RuntimeError("ERROR: Transaction not prepared to cancel")
 
     transaction_row.status = ValidationStatus.CANCELED
@@ -111,7 +111,7 @@ def response_update(doc):
 
     transaction_row = transaction_rows[0]
 
-    if transaction_row.status != ValidationStatus.PENDING:
+    if transaction_row.status != ValidationStatus.IN_PROGRESS:
         raise RuntimeError("ERROR: Transaction already processed")
 
     if transaction_row.provider != str(provider_row.id):

@@ -83,27 +83,26 @@ class CreateValidation(BaseResource):
                 provider=data["provider"],
                 validationType=data["validationType"],
                 requestParams=data["requestParams"],
-                status=ValidationStatus.SENDING,
+                status=ValidationStatus.NEW,
                 isSavedOnProfile=False
             )
             row.save()
 
-            if data["validationType"] == "email":
-                doc = {
+            doc = {
                     "type": "email",
                     "action": "create",
                     "transactionId": '{}'.format(row.id),
-                    "email": row.requestParams["email"],
+                    "params": data["requestParams"],
                     'did': data["did"]
                 }
-                redisBroker.send_email_validation(doc, provider["apiKey"])
+            redisBroker.send_validator_message(doc, provider["apiKey"])
 
             result["validationtx"] = row.as_dict()
 
         self.on_success(res, result)
 
     def transaction_already_sent(self, data):
-        time = datetime.now() - timedelta(minutes=10)
+        time = datetime.utcnow() - timedelta(minutes=10)
         rows = ValidationTx.objects(did=data["did"].replace("did:elastos:", "").split("#")[0],
                                     validationType=data["validationType"],
                                     provider=data["provider"],
@@ -111,7 +110,7 @@ class CreateValidation(BaseResource):
         if rows:
             for row in rows:
                 obj = row.as_dict()
-                if obj["status"] == ValidationStatus.CANCELED or obj["status"] == ValidationStatus.CANCELING:
+                if obj["status"] == ValidationStatus.CANCELED or obj["status"] == ValidationStatus.CANCELATION_IN_PROGRESS:
                     return None
                 if obj["requestParams"] == data["requestParams"]:
                     return obj
@@ -131,7 +130,7 @@ class CancelValidation(BaseResource):
             
         request = rows[0]
 
-        if request.status == ValidationStatus.CANCELING:
+        if request.status == ValidationStatus.CANCELATION_IN_PROGRESS:
            self.on_success(res, request.as_dict()) 
 
         if request.status == ValidationStatus.CANCELED:
@@ -141,7 +140,7 @@ class CancelValidation(BaseResource):
            raise AppError(description="Validation already processed") 
 
 
-        if request.status == ValidationStatus.SENDING:
+        if request.status == ValidationStatus.IN_PROGRESS:
            request.status = ValidationStatus.CANCELED
            request.save()
            self.on_success(res, request.as_dict())
@@ -152,13 +151,13 @@ class CancelValidation(BaseResource):
         if not providers:
            raise AppError(description="Provider not found")  
         
-        redisBroker.send_email_validation({
+        redisBroker.send_validator_message({
                     "type": "email",
                     "action": "cancel",
                     "transactionId": f'{request.id}',
         }, providers[0].apikey)
 
-        request.status = ValidationStatus.CANCELING
+        request.status = ValidationStatus.CANCELATION_IN_PROGRESS
         request.save()
         
         self.on_success(res, request.as_dict())
