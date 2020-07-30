@@ -55,7 +55,7 @@ curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/valid
 
 To get transaction details using confirmationID:
 ```
-curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5f17a02afbe8980577674011
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5f221ca77d6d25afa44ea4fe
 ```
 
 To get total transaction count for a specific provider:
@@ -65,7 +65,12 @@ curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/valid
 
 To update isSavedOnProfile transaction information:
 ```
-curl -XPOST  -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/is_saved/confirmation_id/5f17a02afbe8980577674011
+curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/is_saved/confirmation_id/5f17a02afbe8980577674011
+```
+
+To cancel a transaction using confirmationID:
+```
+curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/cancel/confirmation_id/5f221ca77d6d25afa44ea4fe
 ```
 
 # Deploy to production

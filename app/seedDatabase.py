@@ -41,10 +41,9 @@ def update_pending_validation_status():
 
     for transaction in transactions:
         if transaction.status == "Pending":
-           transaction.status = ValidationStatus.NEW
+            transaction.status = ValidationStatus.NEW
 
-        if transaction.retries == None:
+        if transaction.retries is None:
             transaction.retries = 0
-        
-        transaction.save()
 
+        transaction.save()

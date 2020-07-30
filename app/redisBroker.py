@@ -1,8 +1,6 @@
 import redis
-import sys
 import json
 import time
-import requests
 from app import log, config
 from app.model import ValidationTx, ValidationStatus, Provider
 
@@ -14,7 +12,6 @@ broker = redis.Redis(host=config.REDIS['HOST'], port=config.REDIS['PORT'], passw
 def send_validator_message(doc, apiKey):
     channel = "validator-{}".format(apiKey)
     broker.publish(channel, json.dumps(doc))
-    
 
 
 def monitor_redis():
@@ -35,93 +32,56 @@ def monitor_redis():
                 message = message['data'].decode('utf-8')
                 doc = json.loads(message)
                 LOG.info(f'Response Received message: {message}')
-
-                if doc["action"] == "create":
-                   response_create(doc)
-
-                if doc["action"] == "cancel":
-                   response_cancel(doc)
-
-                if doc["action"] == "update":
-                   response_update(doc)
-                
-
+                handle_response(doc)
                 LOG.info(f'Response processed with success')
             except Exception as e:
                 LOG.info(f'Response Error: {e}')
                 pass
 
 
-
-
-def response_create(doc):
+def handle_response(doc):
+    tx_type = doc["action"]
+    if tx_type not in ["create", "cancel", "update"]:
+        LOG.info(f'Transaction type "{tx_type}" passed is not valid')
+        return
     provider_rows = Provider.objects(apikey=doc["validatorKey"])
     if not provider_rows:
-        raise RuntimeError("ERROR: Invalid Validator Key")
+        LOG.info(f'Validator key "{doc["validatorKey"]} is invalid')
+        return
 
     provider_row = provider_rows[0]
 
     transaction_rows = ValidationTx.objects(id=doc["transactionId"])
     if not transaction_rows:
-        raise RuntimeError("ERROR: Transaction not found")
+        LOG.info(f'Transaction ID "{doc["transactionId"]} not found')
+        return
 
     transaction_row = transaction_rows[0]
 
     if transaction_row.provider != str(provider_row.id):
-        raise RuntimeError("ERROR: Transaction provider is different than response")
+        LOG.info(f'Provider "{provider_row.name} cannot perform this action')
+        return
 
-    if transaction_row.status != ValidationStatus.NEW:
-        raise RuntimeError("ERROR: Transaction already processed")
-
-    transaction_row.status = ValidationStatus.IN_PROGRESS
+    if tx_type == "create":
+        if transaction_row.status != ValidationStatus.NEW:
+            LOG.info(f'Transaction ID "{str(transaction_row.id)}" is already being processed')
+            return
+        transaction_row.status = ValidationStatus.IN_PROGRESS
+    elif tx_type == "cancel":
+        if transaction_row.status != ValidationStatus.CANCELATION_IN_PROGRESS:
+            LOG.info(f'Transaction ID "{str(transaction_row.id)}" cannot be cancelled because no '
+                     f'cancellation is in progress for this request')
+            return
+        transaction_row.status = ValidationStatus.CANCELED
+    elif tx_type == "update":
+        if transaction_row.status != ValidationStatus.IN_PROGRESS:
+            LOG.info(f'Transaction ID "{str(transaction_row.id)}" is already being processed')
+            return
+        if doc["response"] != ValidationStatus.APPROVED and doc["response"] != ValidationStatus.REJECTED:
+            LOG.info(f'Response status "{doc["response"]}" is invalid')
+            return
+        transaction_row.status = doc["response"]
+        transaction_row.reason = doc["reason"]
+        transaction_row.verifiedCredential = doc["verifiableCredential"]
     transaction_row.save()
 
-def response_cancel(doc):
-    provider_rows = Provider.objects(apikey=doc["validatorKey"])
-    if not provider_rows:
-        raise RuntimeError("ERROR: Invalid Validator Key")
-
-    provider_row = provider_rows[0]
-
-    transaction_rows = ValidationTx.objects(id=doc["transactionId"])
-    if not transaction_rows:
-        raise RuntimeError("ERROR: Transaction not found")
-
-    transaction_row = transaction_rows[0]
-
-    if transaction_row.provider != str(provider_row.id):
-        raise RuntimeError("ERROR: Transaction provider is different than response")
-
-    if transaction_row.status != ValidationStatus.CANCELATION_IN_PROGRESS:
-        raise RuntimeError("ERROR: Transaction not prepared to cancel")
-
-    transaction_row.status = ValidationStatus.CANCELED
-    transaction_row.save()
-
-def response_update(doc):
-    provider_rows = Provider.objects(apikey=doc["validatorKey"])
-    if not provider_rows:
-        raise RuntimeError("ERROR: Invalid Validator Key")
-
-    provider_row = provider_rows[0]
-
-    transaction_rows = ValidationTx.objects(id=doc["transactionId"])
-    if not transaction_rows:
-        raise RuntimeError("ERROR: Transaction not found")
-
-    transaction_row = transaction_rows[0]
-
-    if transaction_row.status != ValidationStatus.IN_PROGRESS:
-        raise RuntimeError("ERROR: Transaction already processed")
-
-    if transaction_row.provider != str(provider_row.id):
-        raise RuntimeError("ERROR: Transaction provider is different than response")
-
-    if doc["response"] != ValidationStatus.APPROVED and doc["response"] != ValidationStatus.REJECTED:
-        raise RuntimeError("ERROR: Response status invalid")
-
-    transaction_row.status = doc["response"]
-    transaction_row.reason = doc["reason"]
-    transaction_row.verifiedCredential = doc["verifiableCredential"]
-
-    transaction_row.save()
