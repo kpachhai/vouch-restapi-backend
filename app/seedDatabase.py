@@ -1,4 +1,5 @@
 from app import log, config
+from app.model.validationtx import ValidationTx, ValidationStatus
 from app.model.provider import Provider
 
 LOG = log.get_logger()
@@ -31,3 +32,18 @@ def seed_database():
             row.save()
 
     LOG.info("Finished seeding Database")
+
+
+def update_pending_validation_status():
+    LOG.info("Start updating pending validation status")
+
+    transactions = ValidationTx.objects()
+
+    for transaction in transactions:
+        if transaction.status == "Pending":
+            transaction.status = ValidationStatus.NEW
+
+        if transaction.retries is None:
+            transaction.retries = 0
+
+        transaction.save()

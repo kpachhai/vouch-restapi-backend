@@ -8,6 +8,10 @@ PRODUCTION = config('PRODUCTION', default=False, cast=bool)
 
 LOG_LEVEL = "DEBUG"
 
+CRON_INTERVAL = TRANSACTION_RETRIES = config('CRON_INTERVAL', default=60, cast=int)
+
+TRANSACTION_RETRIES = config('TRANSACTION_RETRIES', default=5, cast=int)
+
 DEBUG = True
 
 SECRET_KEY = config('SECRET_KEY', default='vouch-restapi-secret-key', cast=str)

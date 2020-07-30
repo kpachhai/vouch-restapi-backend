@@ -1,12 +1,16 @@
 import datetime
 
-from mongoengine import StringField, DictField, DateTimeField, Document, BooleanField
+from mongoengine import StringField, DictField, DateTimeField, Document, BooleanField, IntField
+
 
 class ValidationStatus(object):
-      PENDING = "Pending"
-      WAITING_RESPONSE = "Waiting for response"
-      APPROVED = "Approved"
-      REJECTED = "Rejected"
+    NEW = "New"
+    IN_PROGRESS = "In progress"
+    CANCELATION_IN_PROGRESS = "Cancelation in progress"
+    CANCELED = "Canceled"
+    APPROVED = "Approved"
+    REJECTED = "Rejected"
+
 
 class ValidationTx(Document):
     did = StringField(max_length=128)
@@ -16,8 +20,9 @@ class ValidationTx(Document):
     status = StringField(max_length=32)
     reason = StringField(max_length=128)
     verifiedCredential = DictField()
-    isSavedOnProfile=BooleanField()
+    isSavedOnProfile = BooleanField()
     created = DateTimeField()
+    retries = IntField()
     modified = DateTimeField(default=datetime.datetime.utcnow)
 
     def __repr__(self):
@@ -25,7 +30,7 @@ class ValidationTx(Document):
 
     def as_dict(self):
         if not self.isSavedOnProfile:
-           self.isSavedOnProfile = False
+            self.isSavedOnProfile = False
         return {
             "id": str(self.id),
             "did": self.did,
@@ -36,6 +41,7 @@ class ValidationTx(Document):
             "reason": self.reason,
             "isSavedOnProfile": self.isSavedOnProfile,
             "verifiedCredential": self.verifiedCredential,
+            "retries": self.retries,
             "created": str(self.created),
             "modified": str(self.modified)
         }
