@@ -1,6 +1,6 @@
 import datetime
 
-from mongoengine import StringField, DictField, DateTimeField, Document, BooleanField
+from mongoengine import StringField, DictField, DateTimeField, Document, BooleanField, IntField
 
 class ValidationStatus(object):
       NEW = "New"
@@ -20,6 +20,7 @@ class ValidationTx(Document):
     verifiedCredential = DictField()
     isSavedOnProfile=BooleanField()
     created = DateTimeField()
+    retries = IntField()
     modified = DateTimeField(default=datetime.datetime.utcnow)
 
     def __repr__(self):
@@ -38,6 +39,7 @@ class ValidationTx(Document):
             "reason": self.reason,
             "isSavedOnProfile": self.isSavedOnProfile,
             "verifiedCredential": self.verifiedCredential,
+            "retries": self.retries,
             "created": str(self.created),
             "modified": str(self.modified)
         }

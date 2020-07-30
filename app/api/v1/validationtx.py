@@ -84,7 +84,8 @@ class CreateValidation(BaseResource):
                 validationType=data["validationType"],
                 requestParams=data["requestParams"],
                 status=ValidationStatus.NEW,
-                isSavedOnProfile=False
+                isSavedOnProfile=False,
+                retries=0
             )
             row.save()
 
@@ -140,7 +141,7 @@ class CancelValidation(BaseResource):
            raise AppError(description="Validation already processed") 
 
 
-        if request.status == ValidationStatus.IN_PROGRESS:
+        if request.status == ValidationStatus.NEW:
            request.status = ValidationStatus.CANCELED
            request.save()
            self.on_success(res, request.as_dict())
@@ -158,6 +159,7 @@ class CancelValidation(BaseResource):
         }, providers[0].apikey)
 
         request.status = ValidationStatus.CANCELATION_IN_PROGRESS
+        request.retries = 0
         request.save()
         
         self.on_success(res, request.as_dict())

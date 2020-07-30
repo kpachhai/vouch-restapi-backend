@@ -76,6 +76,9 @@ application = App(middleware=[
 
 seedDatabase.seed_database()
 
+# Temporary status update
+seedDatabase.update_pending_validation_status()
+
 th = threading.Thread(target=redisBroker.monitor_redis)
 th.setDaemon(True)
 th.start()
