@@ -8,7 +8,7 @@ PRODUCTION = config('PRODUCTION', default=False, cast=bool)
 
 LOG_LEVEL = "DEBUG"
 
-CRON_INTERVAL = TRANSACTION_RETRIES = config('CRON_INTERVAL', default=60, cast=int)
+CRON_INTERVAL = config('CRON_INTERVAL', default=60, cast=int)
 
 TRANSACTION_RETRIES = config('TRANSACTION_RETRIES', default=5, cast=int)
 
