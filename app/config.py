@@ -1,6 +1,10 @@
 import base64
+import os
+import json
 
 from decouple import config
+
+from app.service import DidRetrieval
 
 BRAND_NAME = "Vouch REST API"
 
@@ -15,6 +19,8 @@ TRANSACTION_RETRIES = config('TRANSACTION_RETRIES', default=5, cast=int)
 DEBUG = True
 
 SECRET_KEY = config('SECRET_KEY', default='vouch-restapi-secret-key', cast=str)
+
+DID_SIDECHAIN_RPC_URL = config('DID_SIDECHAIN_RPC_URL', default='http://api.elastos.io:20606', cast=str)
 
 MONGO = {
     "DATABASE": config('MONGO_DATABASE', default='vouchdb', cast=str),
@@ -32,28 +38,37 @@ REDIS = {
 
 
 def get_providers():
+    config_path = os.path.dirname(os.path.abspath(__file__)).split("/")
+    config_path = "/".join(config_path[:-1]) + "/validator-config/"
+    provider_files = [file_name for file_name in os.listdir(config_path) if file_name.endswith('.json')]
     providers = []
-    i = 1
-    while True:
-        name = config(f"PROVIDER{i}_NAME", default=None)
-        logo_path = config(f"PROVIDER{i}_LOGO_PATH", default=None)
-        api_key = config(f"PROVIDER{i}_API_KEY", default=None)
-        validation_types = config(f"PROVIDER{i}_VALIDATION_TYPES", default=None)
-        if not (name and logo_path and api_key and validation_types):
-            break
-        else:
-            logo = ""
-            with open(logo_path, "rb") as image_file:
-                logo = f"data:image/png;base64,{base64.b64encode(image_file.read()).decode()}"
-            validation_types = validation_types.replace(" ", "").split(",")
+    for provider_file in provider_files:
+        with open(config_path + provider_file, "rb") as f:
+            provider = json.load(f)
+            did = provider["did"]
+            name = provider["name"]
+            validation = provider["validation"]
+            logo = None
+            did_retrieval = DidRetrieval(did)
+            document = did_retrieval.get_current_did_document()
+            if document:
+                verifiable_creds = document["verifiable_creds"]
+                for cred in verifiable_creds:
+                    cred_subject = cred["subject"]
+                    if "avatar" in cred_subject.keys():
+                        logo = "data:" + cred_subject["avatar"]["content-type"] + ";base64," + cred_subject["avatar"]["data"]
+                        print(logo)
+            if not logo:
+                logo_path = config_path + "default.png"
+                with open(logo_path, "rb") as image_file:
+                    logo = f"data:image/png;base64,{base64.b64encode(image_file.read()).decode()}"
             provider = {
+                "did": did,
                 "name": name,
                 "logo": logo,
-                "api_key": api_key,
-                "validation_types": validation_types
+                "validation": validation
             }
             providers.append(provider)
-        i += 1
     return providers
 
 

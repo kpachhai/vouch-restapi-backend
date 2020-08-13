@@ -97,7 +97,7 @@ class CreateValidation(BaseResource):
                 "params": data["requestParams"],
                 'did': data["did"]
             }
-            redisBroker.send_validator_message(doc, provider["apiKey"])
+            redisBroker.send_validator_message(doc, provider["did"])
 
             result["validationtx"] = row.as_dict()
 
@@ -157,7 +157,7 @@ class CancelValidation(BaseResource):
             "type": "email",
             "action": "cancel",
             "transactionId": f'{request.id}',
-        }, providers[0].apikey)
+        }, providers[0].did)
 
         request.status = ValidationStatus.CANCELATION_IN_PROGRESS
         request.retries = 0

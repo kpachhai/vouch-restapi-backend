@@ -1,0 +1,11 @@
+{
+  "did": "did:elastos:ijuu2rrpdLDm7Hz5XAthTtmEhA6omrwMvT",
+  "name": "Starfish Labs",
+  "validation": {
+    "email": {
+      "next_steps": [
+        "Please check your email for further instructions"
+      ]
+    }
+  }
+}

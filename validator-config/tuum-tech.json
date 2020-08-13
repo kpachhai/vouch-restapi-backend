@@ -1,0 +1,13 @@
+{
+  "did": "did:elastos:imxNkhKuuXaefyFKQuzFnkfRdedDVLYmKV",
+  "name": "Tuum Tech",
+  "validation": {
+    "email": {
+      "next_steps": [
+        "Please check your email for a QR code",
+        "Scan QR code using elastOS",
+        "Wait to be verified"
+      ]
+    }
+  }
+}

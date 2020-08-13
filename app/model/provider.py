@@ -2,11 +2,12 @@ import datetime
 
 from mongoengine import StringField, DictField, DateTimeField, ListField, Document
 
+
 class Provider(Document):
+    did = StringField(max_length=128)
     name = StringField(max_length=128)
     logo = StringField()
-    apikey = StringField(max_length=128)
-    validationTypes = ListField(StringField(), default=[])
+    validation = DictField()
     created = DateTimeField()
     modified = DateTimeField(default=datetime.datetime.utcnow)
 
@@ -16,10 +17,10 @@ class Provider(Document):
     def as_dict(self):
         return {
             "id": str(self.id),
+            "did": self.did,
             "name": self.name,
             "logo": self.logo,
-            "apiKey": self.apikey,
-            "validationTypes": self.validationTypes,
+            "validation": self.validation,
             "created": str(self.created),
             "modified": str(self.modified)
         }
@@ -29,7 +30,7 @@ class Provider(Document):
             "id": str(self.id),
             "name": self.name,
             "logo": self.logo,
-            "validationTypes": self.validationTypes,
+            "validation": self.validation,
             "stats": stats
         }
 

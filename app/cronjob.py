@@ -28,9 +28,9 @@ def resend_validations_without_response():
             else:
                 action = "cancel"
 
-            providersRows = Provider.objects(id=transaction.provider)
-            if providersRows:
-                provider = providersRows[0]
+            providers_rows = Provider.objects(id=transaction.provider)
+            if providers_rows:
+                provider = providers_rows[0]
                 doc = {
                     "type": transaction.validationType,
                     "action": action,
@@ -38,7 +38,7 @@ def resend_validations_without_response():
                     "params": transaction.requestParams,
                     'did': transaction.did
                 }
-                redisBroker.send_validator_message(doc, provider.apikey)
+                redisBroker.send_validator_message(doc, provider.did)
 
                 transaction.retries += 1
                 LOG.info(f"Resent the request {str(transaction.id)} to {provider.name}")

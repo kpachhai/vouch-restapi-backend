@@ -1,8 +1,6 @@
 import falcon
 import threading
 
-from falcon_cors import CORS
-
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from app import log, config, redisBroker, seedDatabase
@@ -29,7 +27,7 @@ class App(falcon.API):
         self.add_route("/v1/providers", providers.ProvidersCollection())
 
         # Retrieves providers from validation type
-        self.add_route("/v1/providers/validationType/{validationType}",
+        self.add_route("/v1/providers/validationType/{validation_type}",
                        providers.ProvidersFromValidationTypeCollection())
 
         # Retrieves all transactions according to did

@@ -10,24 +10,25 @@ def seed_database():
 
     providers = config.PROVIDERS
     for provider in providers:
+        did = provider["did"]
         name = provider["name"]
         logo = provider["logo"]
-        api_key = provider["api_key"]
-        validation_types = provider["validation_types"]
+        validation = provider["validation"]
 
-        rows = Provider.objects(name=name, apikey=api_key)
+        rows = Provider.objects(did=did)
         if rows:
             row = rows[0]
-            if row.validationTypes.sort() != validation_types:
-                row.validationTypes = validation_types
+            if row.name != name or list(row.validation.keys()).sort() != list(validation.keys()).sort():
+                row.name = name
+                row.validation = validation
                 row.save()
         else:
-            LOG.info(f"Inserting a new provider: '{name}' with API Key '{api_key}'")
+            LOG.info(f"Inserting a new provider: '{name}' with DID'{did}'")
             row = Provider(
+                did=did,
                 name=name,
                 logo=logo,
-                apikey=api_key,
-                validationTypes=validation_types
+                validation=validation
             )
             row.save()
 

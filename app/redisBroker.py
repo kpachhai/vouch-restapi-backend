@@ -9,8 +9,8 @@ LOG = log.get_logger()
 broker = redis.Redis(host=config.REDIS['HOST'], port=config.REDIS['PORT'], password=config.REDIS['PASSWORD'])
 
 
-def send_validator_message(doc, apiKey):
-    channel = "validator-{}".format(apiKey)
+def send_validator_message(doc, did):
+    channel = "validator-{}".format(did)
     broker.publish(channel, json.dumps(doc))
 
 
@@ -44,7 +44,7 @@ def handle_response(doc):
     if tx_type not in ["create", "cancel", "update"]:
         LOG.info(f'Transaction type "{tx_type}" passed is not valid')
         return
-    provider_rows = Provider.objects(apikey=doc["validatorKey"])
+    provider_rows = Provider.objects(did=doc["validatorKey"])
     if not provider_rows:
         LOG.info(f'Validator key "{doc["validatorKey"]} is invalid')
         return
