@@ -3,6 +3,7 @@
   "name": "Starfish Labs",
   "validation": {
     "email": {
+      "manual": false,
       "next_steps": [
         "Please check your email for further instructions"
       ]

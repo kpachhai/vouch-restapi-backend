@@ -43,6 +43,11 @@ To get providers for a specific validationType for something like "email":
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/providers/validationType/email
 ```
 
+To register a provider manually,
+```
+curl -XPOST  -H "Authorization: vouch-restapi-secret-key" -H "Content-Type: application/json" -H "Accept: application/json" -d @test/newProvider.json http://localhost:8080/v1/providers/create
+```
+
 To create a transaction:
 ```
 curl -XPOST  -H "Authorization: vouch-restapi-secret-key" -H "Content-Type: application/json" -H "Accept: application/json" -d @test/emailValidation.json http://localhost:8080/v1/validationtx/create

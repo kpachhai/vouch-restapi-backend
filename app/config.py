@@ -45,7 +45,7 @@ def get_providers():
     for provider_file in provider_files:
         with open(config_path + provider_file, "rb") as f:
             provider = json.load(f)
-            did = provider["did"]
+            did = provider["did"].replace("did:elastos:", "").split("#")[0]
             name = provider["name"]
             validation = provider["validation"]
             logo = None
@@ -57,7 +57,6 @@ def get_providers():
                     cred_subject = cred["subject"]
                     if "avatar" in cred_subject.keys():
                         logo = "data:" + cred_subject["avatar"]["content-type"] + ";base64," + cred_subject["avatar"]["data"]
-                        print(logo)
             if not logo:
                 logo_path = config_path + "default.png"
                 with open(logo_path, "rb") as image_file:
