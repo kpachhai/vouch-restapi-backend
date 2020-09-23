@@ -28,6 +28,7 @@ class Provider(Document):
     def as_readonly_dict(self, stats={}):
         return {
             "id": str(self.id),
+            "did": self.did,
             "name": self.name,
             "logo": self.logo,
             "validation": self.validation,
