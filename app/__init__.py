@@ -42,6 +42,9 @@ class App(falcon.API):
         # Retrieves transaction count according to provider ID
         self.add_route("/v1/validationtx/count/provider_id/{provider_id}", validationtx.ValidationCountFromProvider())
 
+        # Retrieves all services by provider did
+        self.add_route("/v1/provider/services/did/{did}", providers.ServicesFromDid())
+
         # Update isSavedOnProfile information
         self.add_route("/v1/validationtx/is_saved/confirmation_id/{confirmation_id}",
                        validationtx.SetIsSavedOnProfile())
