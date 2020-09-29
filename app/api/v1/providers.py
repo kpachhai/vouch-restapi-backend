@@ -106,10 +106,13 @@ class ServicesFromDid(BaseResource):
 
     def on_get(self, req, res, did):
         did = did.replace("did:elastos:", "").split("#")[0]
+        result = {}
         rows = Provider.objects(did=did)
         if rows:
             row = rows[0]
-            obj = list(row.validation.keys())
-            self.on_success(res, obj)
+
+            result["id"] = str(row.id)
+            result["validationTypes"] = list(row.validation.keys())
+            self.on_success(res, result)
         else:
             raise AppError(description="Cannot retrieve services for the given did")
