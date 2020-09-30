@@ -65,7 +65,7 @@ curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/valid
 
 To get all transactions from a providerId:
 ```
-curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080//v1/validationtx/provider_id/5f3ff44d7e80c08c288072dc
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/provider_id/5f3ff44d7e80c08c288072dc
 ```
 
 
