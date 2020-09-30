@@ -36,6 +36,9 @@ class App(falcon.API):
         # Retrieves all transactions according to did
         self.add_route("/v1/validationtx/did/{did}", validationtx.ValidationsFromDid())
 
+        # Retrieves all transactions according to provider id
+        self.add_route("/v1/validationtx/provider_id/{provider_id}", validationtx.ValidationsFromProvider())
+
         # Retrieves transaction according to confirmation ID
         self.add_route("/v1/validationtx/confirmation_id/{confirmation_id}", validationtx.ValidationFromId())
 

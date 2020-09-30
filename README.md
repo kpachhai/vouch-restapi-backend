@@ -63,6 +63,12 @@ To get all transactions from a DidId:
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/did/igZjRKt1HN7toSK3ZPZmNy5NuhfKDhzkUy
 ```
 
+To get all transactions from a providerId:
+```
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080//v1/validationtx/provider_id/5f3ff44d7e80c08c288072dc
+```
+
+
 To get transaction details using confirmationID:
 ```
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/confirmation_id/5f221ca77d6d25afa44ea4fe

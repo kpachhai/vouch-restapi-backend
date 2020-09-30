@@ -22,6 +22,22 @@ class ValidationsFromDid(BaseResource):
         else:
             raise AppError(description="Cannot retrieve requests for the given did")
 
+class ValidationsFromProvider(BaseResource):
+    """
+    Handle for endpoint: /v1/validationtx/provider_id/{provider_id}
+    """
+
+    def on_get(self, req, res, provider_id):
+        rows = ValidationTx.objects(provider=provider_id)
+        if rows:
+            result = []
+            for row in rows:
+                print(row)
+                if row.status == ValidationStatus.NEW:
+                    result.append(row.as_dict())
+            self.on_success(res, result)
+        else:
+            raise AppError(description="Cannot retrieve requests for the given provider_id")
 
 class ValidationFromId(BaseResource):
     """
