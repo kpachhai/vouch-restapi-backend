@@ -112,6 +112,7 @@ class ServicesFromDid(BaseResource):
             row = rows[0]
 
             result["id"] = str(row.id)
+            result["did"] = did
             result["validationTypes"] = list(row.validation.keys())
             self.on_success(res, result)
         else:
