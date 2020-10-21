@@ -89,6 +89,16 @@ To cancel a transaction using confirmationID:
 curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/cancel/confirmation_id/5f221ca77d6d25afa44ea4fe
 ```
 
+To approve a transaction using confirmationID:
+```
+curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/approve/confirmation_id/5f221ca77d6d25afa44ea4fe
+```
+
+To reject a transaction using confirmationID:
+```
+curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/reject/confirmation_id/5f221ca77d6d25afa44ea4fe
+```
+
 # Deploy to production
 - Deploy
 ```
