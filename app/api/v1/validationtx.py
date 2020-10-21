@@ -181,6 +181,55 @@ class CancelValidation(BaseResource):
 
         self.on_success(res, request.as_dict())
 
+class RejectValidation(BaseResource):
+    """
+    Handle for endpoint: /v1/validationtx/reject/confirmation_id/{confirmation_id}
+    """
+
+    def on_post(self, req, res, confirmation_id):
+        rows = ValidationTx.objects(id=confirmation_id)
+
+        if not rows:
+            raise AppError(description="Validation not found")
+
+        request = rows[0]
+
+        if request.status == ValidationStatus.REJECTED:
+            raise AppError(description="Validation is already rejected")
+
+        if request.status == ValidationStatus.APPROVED or request.status == ValidationStatus.REJECTED:
+            raise AppError(description="Validation already processed")
+
+        if request.status == ValidationStatus.NEW:
+            request.status = ValidationStatus.REJECTED
+            request.save()
+            self.on_success(res, request.as_dict())
+            return
+
+class ApproveValidation(BaseResource):
+    """
+    Handle for endpoint: /v1/validationtx/approve/confirmation_id/{confirmation_id}
+    """
+
+    def on_post(self, req, res, confirmation_id):
+        rows = ValidationTx.objects(id=confirmation_id)
+
+        if not rows:
+            raise AppError(description="Validation not found")
+
+        request = rows[0]
+
+        if request.status == ValidationStatus.APPROVED:
+            raise AppError(description="Validation is already approved")
+
+        if request.status == ValidationStatus.APPROVED or request.status == ValidationStatus.REJECTED:
+            raise AppError(description="Validation already processed")
+
+        if request.status == ValidationStatus.NEW:
+            request.status = ValidationStatus.APPROVED
+            request.save()
+            self.on_success(res, request.as_dict())
+            return
 
 class SetIsSavedOnProfile(BaseResource):
     """

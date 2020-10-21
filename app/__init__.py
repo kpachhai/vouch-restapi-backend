@@ -55,6 +55,12 @@ class App(falcon.API):
         # Cancel validation
         self.add_route("/v1/validationtx/cancel/confirmation_id/{confirmation_id}", validationtx.CancelValidation())
 
+        # Reject validation by manual validator
+        self.add_route("/v1/validationtx/reject/confirmation_id/{confirmation_id}", validationtx.RejectValidation())
+
+        # Approve validation by manual validator
+        self.add_route("/v1/validationtx/approve/confirmation_id/{confirmation_id}", validationtx.ApproveValidation())
+
         # Creates a new transaction
         self.add_route("/v1/validationtx/create", validationtx.CreateValidation())
 
