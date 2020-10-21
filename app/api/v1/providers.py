@@ -68,7 +68,7 @@ class CreateProvider(BaseResource):
         rows = Provider.objects(did=did)
         if rows:
             row = rows[0]
-            if row.name != name or list(row.validation.keys()).sort() != list(validation.keys()).sort():
+            if row.name != name or sorted(row.validation.keys()) != sorted(validation.keys()):
                 LOG.info(f"Updating the provider: '{name}' with DID'{did}' with updated details...")
                 row.name = name
                 row.validation = validation
