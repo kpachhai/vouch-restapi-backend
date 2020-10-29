@@ -227,9 +227,9 @@ class ApproveValidation(BaseResource):
 
         if request.status == ValidationStatus.NEW:
             request.status = ValidationStatus.APPROVED
+            request.verifiedCredential = req.media
             request.save()
-            self.on_success(res, request.as_dict())
-            return
+        self.on_success(res, request.as_dict())
 
 class SetIsSavedOnProfile(BaseResource):
     """
