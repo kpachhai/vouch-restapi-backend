@@ -32,7 +32,7 @@ def resend_validations_without_response():
             if providers_rows:
                 provider = providers_rows[0]
 
-                if provider.validation[transaction.validationType]["manual"] == False:
+                if not provider.validation[transaction.validationType]["manual"]:
                     doc = {
                         "type": transaction.validationType,
                         "action": action,

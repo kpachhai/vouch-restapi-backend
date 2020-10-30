@@ -99,21 +99,3 @@ def get_stats_from_validationtx(provider_id):
                 stats[status] = 1
     return stats
 
-class ServicesFromDid(BaseResource):
-    """
-    Handle for endpoint: /v1/provider/did/{did}
-    """
-
-    def on_get(self, req, res, did):
-        did = did.replace("did:elastos:", "").split("#")[0]
-        result = {}
-        rows = Provider.objects(did=did)
-        if rows:
-            row = rows[0]
-
-            result["id"] = str(row.id)
-            result["did"] = did
-            result["validationTypes"] = list(row.validation.keys())
-            self.on_success(res, result)
-        else:
-            raise AppError(description="Cannot retrieve services for the given did")

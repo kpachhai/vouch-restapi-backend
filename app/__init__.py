@@ -6,7 +6,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from app import log, config, redisBroker, seedDatabase
 from app.middleware import AuthMiddleware
 from app.api.common import base
-from app.api.v1 import providers, validationtx
+from app.api.v1 import providers, validationtx, services
 from app.cronjob import resend_validations_without_response
 from app.model import provider
 from app.errors import AppError
@@ -33,36 +33,36 @@ class App(falcon.API):
         # Register a provider manually
         self.add_route("/v1/providers/create", providers.CreateProvider())
 
+        # Retrieves all services by provider did
+        self.add_route("/v1/services/provider_did/{provider_did}", services.ServicesFromProviderDid())
+
         # Retrieves all transactions according to did
-        self.add_route("/v1/validationtx/did/{did}", validationtx.ValidationsFromDid())
+        self.add_route("/v1/validationtx/did/{did}", validationtx.ValidationTxFromDid())
 
         # Retrieves all transactions according to provider id
-        self.add_route("/v1/validationtx/provider_id/{provider_id}", validationtx.ValidationsFromProvider())
+        self.add_route("/v1/validationtx/provider_id/{provider_id}", validationtx.ValidationTxFromProviderId())
 
         # Retrieves transaction according to confirmation ID
-        self.add_route("/v1/validationtx/confirmation_id/{confirmation_id}", validationtx.ValidationFromId())
+        self.add_route("/v1/validationtx/confirmation_id/{confirmation_id}", validationtx.ValidationTxFromConfirmationId())
 
         # Retrieves transaction count according to provider ID
-        self.add_route("/v1/validationtx/count/provider_id/{provider_id}", validationtx.ValidationCountFromProvider())
-
-        # Retrieves all services by provider did
-        self.add_route("/v1/services/provider_did/{did}", providers.ServicesFromDid())
+        self.add_route("/v1/validationtx/count/provider_id/{provider_id}", validationtx.ValidationTxCountFromProviderId())
 
         # Update isSavedOnProfile information
         self.add_route("/v1/validationtx/is_saved/confirmation_id/{confirmation_id}",
-                       validationtx.SetIsSavedOnProfile())
+                       validationtx.SetIsSavedValidationTx())
 
         # Cancel validation
-        self.add_route("/v1/validationtx/cancel/confirmation_id/{confirmation_id}", validationtx.CancelValidation())
+        self.add_route("/v1/validationtx/cancel/confirmation_id/{confirmation_id}", validationtx.CancelValidationTx())
 
         # Reject validation by manual validator
-        self.add_route("/v1/validationtx/reject/confirmation_id/{confirmation_id}", validationtx.RejectValidation())
+        self.add_route("/v1/validationtx/reject/confirmation_id/{confirmation_id}", validationtx.RejectValidationTx())
 
         # Approve validation by manual validator
-        self.add_route("/v1/validationtx/approve/confirmation_id/{confirmation_id}", validationtx.ApproveValidation())
+        self.add_route("/v1/validationtx/approve/confirmation_id/{confirmation_id}", validationtx.ApproveValidationTx())
 
         # Creates a new transaction
-        self.add_route("/v1/validationtx/create", validationtx.CreateValidation())
+        self.add_route("/v1/validationtx/create", validationtx.CreateValidationTx())
 
         self.add_error_handler(AppError, AppError.handle)
 
