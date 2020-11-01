@@ -9,7 +9,7 @@ from app.errors import (
 LOG = log.get_logger()
 
 
-class ValidationsFromDid(BaseResource):
+class ValidationTxFromDid(BaseResource):
     """
     Handle for endpoint: /v1/validationtx/did/{did}
     """
@@ -23,7 +23,24 @@ class ValidationsFromDid(BaseResource):
             raise AppError(description="Cannot retrieve requests for the given did")
 
 
-class ValidationFromId(BaseResource):
+class ValidationTxFromProviderId(BaseResource):
+    """
+    Handle for endpoint: /v1/validationtx/provider_id/{provider_id}
+    """
+
+    def on_get(self, req, res, provider_id):
+        rows = ValidationTx.objects(provider=provider_id)
+        if rows:
+            result = []
+            for row in rows:
+                if row.status == ValidationStatus.NEW:
+                    result.append(row.as_dict())
+            self.on_success(res, result)
+        else:
+            raise AppError(description="Cannot retrieve requests for the given provider_id")
+
+
+class ValidationTxFromConfirmationId(BaseResource):
     """
     Handle for endpoint: /v1/validationtx/confirmation_id/{confirmation_id}
     """
@@ -37,7 +54,7 @@ class ValidationFromId(BaseResource):
             raise AppError(description="Cannot retrieve requests for the given confirmation ID")
 
 
-class ValidationCountFromProvider(BaseResource):
+class ValidationTxCountFromProviderId(BaseResource):
     """
     Handle for endpoint: /v1/validationtx/count/provider_id/{provider_id}
     """
@@ -57,7 +74,7 @@ class ValidationCountFromProvider(BaseResource):
             raise AppError(description="Cannot retrieve total request count for the given provider ID")
 
 
-class CreateValidation(BaseResource):
+class CreateValidationTx(BaseResource):
     """
     Handle for endpoint: /v1/validationtx/create
     """
@@ -120,7 +137,7 @@ class CreateValidation(BaseResource):
         return None
 
 
-class CancelValidation(BaseResource):
+class CancelValidationTx(BaseResource):
     """
     Handle for endpoint: /v1/validationtx/cancel/confirmation_id/{confirmation_id}
     """
@@ -133,16 +150,11 @@ class CancelValidation(BaseResource):
 
         request = rows[0]
 
-        if request.status == ValidationStatus.CANCELATION_IN_PROGRESS:
-            self.on_success(res, request.as_dict())
-
         if request.status == ValidationStatus.CANCELED:
             raise AppError(description="Validation is already canceled")
-
-        if request.status == ValidationStatus.APPROVED or request.status == ValidationStatus.REJECTED:
-            raise AppError(description="Validation already processed")
-
-        if request.status == ValidationStatus.NEW:
+        elif request.status == ValidationStatus.APPROVED or request.status == ValidationStatus.REJECTED:
+            raise AppError(description="Validation cannot be canceled after it has been processed")
+        elif request.status == ValidationStatus.NEW:
             request.status = ValidationStatus.CANCELED
             request.save()
             self.on_success(res, request.as_dict())
@@ -166,7 +178,54 @@ class CancelValidation(BaseResource):
         self.on_success(res, request.as_dict())
 
 
-class SetIsSavedOnProfile(BaseResource):
+class RejectValidationTx(BaseResource):
+    """
+    Handle for endpoint: /v1/validationtx/reject/confirmation_id/{confirmation_id}
+    """
+
+    def on_post(self, req, res, confirmation_id):
+        rows = ValidationTx.objects(id=confirmation_id)
+
+        if not rows:
+            raise AppError(description="Validation not found")
+
+        request = rows[0]
+
+        if request.status == ValidationStatus.REJECTED:
+            raise AppError(description="Validation is already rejected")
+        elif request.status == ValidationStatus.APPROVED or request.status == ValidationStatus.REJECTED:
+            raise AppError(description="Validation cannot be rejected after it has been processed")
+        elif request.status == ValidationStatus.NEW:
+            request.status = ValidationStatus.REJECTED
+            request.save()
+        self.on_success(res, request.as_dict())
+
+
+class ApproveValidationTx(BaseResource):
+    """
+    Handle for endpoint: /v1/validationtx/approve/confirmation_id/{confirmation_id}
+    """
+
+    def on_post(self, req, res, confirmation_id):
+        rows = ValidationTx.objects(id=confirmation_id)
+
+        if not rows:
+            raise AppError(description="Validation not found")
+
+        request = rows[0]
+
+        if request.status == ValidationStatus.APPROVED:
+            raise AppError(description="Validation is already approved")
+        elif request.status == ValidationStatus.REJECTED:
+            raise AppError(description="Validation cannot be approved after it has already been rejected")
+        elif request.status == ValidationStatus.NEW:
+            request.status = ValidationStatus.APPROVED
+            request.verifiedCredential = req.media
+            request.save()
+        self.on_success(res, request.as_dict())
+
+
+class SetIsSavedValidationTx(BaseResource):
     """
     Handle for endpoint: /v1/validationtx/is_saved/confirmation_id/{confirmation_id}
     """

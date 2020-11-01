@@ -98,3 +98,4 @@ def get_stats_from_validationtx(provider_id):
             else:
                 stats[status] = 1
     return stats
+

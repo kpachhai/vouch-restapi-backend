@@ -5,6 +5,9 @@
     "validation": {
         "email": {
             "manual": true
+        },
+        "name": {
+            "manual": true
         }
     }
 }

@@ -43,6 +43,11 @@ To get providers for a specific validationType for something like "email":
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/providers/validationType/email
 ```
 
+To get all services of a provider by its DidId:
+```
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/provider/services/did/imxNkhKuuXaefyFKQuzFnkfRdedDVLYmKV
+```
+
 To register a provider manually,
 ```
 curl -XPOST  -H "Authorization: vouch-restapi-secret-key" -H "Content-Type: application/json" -H "Accept: application/json" -d @test/newProvider.json http://localhost:8080/v1/providers/create
@@ -57,6 +62,12 @@ To get all transactions from a DidId:
 ```
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/did/igZjRKt1HN7toSK3ZPZmNy5NuhfKDhzkUy
 ```
+
+To get all transactions from a providerId:
+```
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/provider_id/5f3ff44d7e80c08c288072dc
+```
+
 
 To get transaction details using confirmationID:
 ```
@@ -76,6 +87,16 @@ curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v
 To cancel a transaction using confirmationID:
 ```
 curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/cancel/confirmation_id/5f221ca77d6d25afa44ea4fe
+```
+
+To approve a transaction using confirmationID:
+```
+curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/approve/confirmation_id/5f221ca77d6d25afa44ea4fe
+```
+
+To reject a transaction using confirmationID:
+```
+curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/reject/confirmation_id/5f221ca77d6d25afa44ea4fe
 ```
 
 # Deploy to production

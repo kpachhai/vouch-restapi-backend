@@ -31,17 +31,19 @@ def resend_validations_without_response():
             providers_rows = Provider.objects(id=transaction.provider)
             if providers_rows:
                 provider = providers_rows[0]
-                doc = {
-                    "type": transaction.validationType,
-                    "action": action,
-                    "transactionId": f'{str(transaction.id)}',
-                    "params": transaction.requestParams,
-                    'did': transaction.did
-                }
-                redisBroker.send_validator_message(doc, provider.did)
 
-                transaction.retries += 1
-                LOG.info(f"Resent the request {str(transaction.id)} to {provider.name}")
+                if not provider.validation[transaction.validationType]["manual"]:
+                    doc = {
+                        "type": transaction.validationType,
+                        "action": action,
+                        "transactionId": f'{str(transaction.id)}',
+                        "params": transaction.requestParams,
+                        'did': transaction.did
+                    }
+                    redisBroker.send_validator_message(doc, provider.did)
+
+                    transaction.retries += 1
+                    LOG.info(f"Resent the request {str(transaction.id)} to {provider.name}")
             else:
                 LOG.error(f'Provider from transaction {str(transaction.id)} not found - Automatic canceling')
                 transaction.reason = "Canceled automatic - Provider not found"
