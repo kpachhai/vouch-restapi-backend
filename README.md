@@ -91,7 +91,28 @@ curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v
 
 To approve a transaction using confirmationID:
 ```
-curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/approve/confirmation_id/5f221ca77d6d25afa44ea4fe
+curl -X POST \
+  http://0.0.0.0:8080/v1/validationtx/approve/confirmation_id/5f9089dcd8850661b1f1c3d3 \
+  -H 'Authorization: vouch-restapi-secret-key' \
+  -H 'Content-Type: application/json' \
+  -d '{
+        "id": "did:elastos:ifKeiEqaPuMpZKniH4jaHWoL3XobrHiKrm#ifKeiEqaPuMpZKniH4jaHWoL3XobrHiKrm#email",
+        "type": [
+            "BasicProfileCredential"
+        ],
+        "issuer": "did:elastos:iddJESh7ymo3xoVEpsC5476NSS8eepBJo8",
+        "issuanceDate": "2020-10-29T16:00:43.000Z",
+        "expirationDate": "2020-11-02T16:00:43.000Z",
+        "credentialSubject": {
+            "id": "did:elastos:ifKeiEqaPuMpZKniH4jaHWoL3XobrHiKrm",
+            "email": "rong.chen4@elastos.internet"
+        },
+        "proof": {
+            "type": "ECDSAsecp256r1",
+            "verificationMethod": "did:elastos:iddJESh7ymo3xoVEpsC5476NSS8eepBJo8#primary",
+            "signature": "xlGZqi-nDHVi8wtDU0L06uB8HRt4so-v1VyXLwpsecKhh3MMOM8U95hc-oTa6n_M4xE_r7BJ3mJnjc3WuXTdwg"
+        }
+    }'
 ```
 
 To reject a transaction using confirmationID:
