@@ -102,7 +102,7 @@ curl -X POST \
         ],
         "issuer": "did:elastos:iddJESh7ymo3xoVEpsC5476NSS8eepBJo8",
         "issuanceDate": "2020-10-29T16:00:43.000Z",
-        "expirationDate": "2020-11-02T16:00:43.000Z",
+        "expirationDate": "2025-10-10T16:00:43.000Z",
         "credentialSubject": {
             "id": "did:elastos:ifKeiEqaPuMpZKniH4jaHWoL3XobrHiKrm",
             "email": "rong.chen4@elastos.internet"
