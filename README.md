@@ -45,7 +45,7 @@ curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/provi
 
 To get all services of a provider by its DidId:
 ```
-curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/provider/services/did/imxNkhKuuXaefyFKQuzFnkfRdedDVLYmKV
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/services/provider_did/imxNkhKuuXaefyFKQuzFnkfRdedDVLYmKV
 ```
 
 To register a provider manually,

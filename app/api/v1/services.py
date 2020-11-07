@@ -13,8 +13,8 @@ class ServicesFromProviderDid(BaseResource):
     Handle for endpoint: /v1/services/provider_did/{provider_did}
     """
 
-    def on_get(self, req, res, did):
-        did = did.replace("did:elastos:", "").split("#")[0]
+    def on_get(self, req, res, provider_did):
+        did = provider_did.replace("did:elastos:", "").split("#")[0]
         result = {}
         rows = Provider.objects(did=did)
         if rows:
