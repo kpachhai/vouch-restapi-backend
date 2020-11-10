@@ -33,12 +33,38 @@ class ValidationTxFromProviderId(BaseResource):
         if rows:
             result = []
             for row in rows:
-                if row.status == ValidationStatus.NEW:
-                    result.append(row.as_dict())
+                # if row.status == ValidationStatus.NEW:
+                result.append(row.as_dict())
             self.on_success(res, result)
         else:
             raise AppError(description="Cannot retrieve requests for the given provider_id")
 
+class ValidationTxFromProviderDid(BaseResource):
+    """
+    Handle for endpoint: /v1/validationtx/provider_did/{provider_did}
+    """
+
+    def on_get(self, req, res, provider_did):
+
+        providerId = ''
+
+        # Get provider id by provider DID
+        rows = Provider.objects(did=provider_did)
+        if rows:
+            providerId = rows[0].id
+            
+            # Get validation requests using above provider id
+            # TODO: remove redundancy as the below is quite similar to ValidationTxFromProviderId on_get
+            if providerId:
+                rows2 = ValidationTx.objects(provider=str(providerId))
+                print(rows2)
+                if rows2:
+                    result = []
+                    for row in rows2:
+                        result.append(row.as_dict())
+                    self.on_success(res, result)
+                else:
+                    raise AppError(description="Cannot retrieve requests for the given provider_id")
 
 class ValidationTxFromConfirmationId(BaseResource):
     """
