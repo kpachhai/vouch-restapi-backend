@@ -57,7 +57,6 @@ class ValidationTxFromProviderDid(BaseResource):
             # TODO: remove redundancy as the below is quite similar to ValidationTxFromProviderId on_get
             if providerId:
                 rows2 = ValidationTx.objects(provider=str(providerId))
-                print(rows2)
                 if rows2:
                     result = []
                     for row in rows2:
