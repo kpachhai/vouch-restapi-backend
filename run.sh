@@ -13,7 +13,7 @@ function start () {
         -p 6379:6379                                      \
         redis
 
-    virtualenv -p `which python3` .venv
+    virtualenv -p `which python3.7` .venv
     source .venv/bin/activate
     pip install --upgrade pip
 
