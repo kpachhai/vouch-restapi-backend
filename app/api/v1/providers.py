@@ -56,6 +56,8 @@ class CreateProvider(BaseResource):
         name = data["name"]
         logo = data["logo"]
 
+        logo = f"data:{logo['content-type']};{logo['type']},{logo['data']}"        
+
         validation = data["validation"]
         for validation_type, values in validation.items():
             if validation[validation_type]["manual"] is True:
@@ -71,6 +73,7 @@ class CreateProvider(BaseResource):
             if row.name != name or sorted(row.validation.keys()) != sorted(validation.keys()):
                 LOG.info(f"Updating the provider: '{name}' with DID'{did}' with updated details...")
                 row.name = name
+                row.logo = logo
                 row.validation = validation
                 row.save()
         else:
