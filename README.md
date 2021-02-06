@@ -20,7 +20,7 @@ cp .env.example .env
 - Modify .env file with your own values
 - [OPTIONAL]: If you want to remove previous mongodb data and start fresh, remove the mongodb directory
 ```
-rm -rf .mongodb-data
+rm -rf ~/.tuum-mongodb-data
 ```
 - Start API server
 ```
@@ -31,6 +31,11 @@ rm -rf .mongodb-data
 - To check whether the API is working:
 ```
 curl http://localhost:8080
+```
+
+To register a provider manually,
+```
+curl -XPOST  -H "Authorization: vouch-restapi-secret-key" -H "Content-Type: application/json" -H "Accept: application/json" -d @test/newProvider.json http://localhost:8080/v1/providers/create
 ```
 
 To get all providers:
@@ -48,11 +53,6 @@ To get all services of a provider by its DidId:
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/services/provider_did/imxNkhKuuXaefyFKQuzFnkfRdedDVLYmKV
 ```
 
-To register a provider manually,
-```
-curl -XPOST  -H "Authorization: vouch-restapi-secret-key" -H "Content-Type: application/json" -H "Accept: application/json" -d @test/newProvider.json http://localhost:8080/v1/providers/create
-```
-
 To create a transaction:
 ```
 curl -XPOST  -H "Authorization: vouch-restapi-secret-key" -H "Content-Type: application/json" -H "Accept: application/json" -d @test/emailValidation.json http://localhost:8080/v1/validationtx/create
@@ -68,6 +68,10 @@ To get all transactions from a providerId:
 curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/provider_id/5f3ff44d7e80c08c288072dc
 ```
 
+To get all transactions from a provider DID:
+```
+curl -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/provider_did/imxNkhKuuXaefyFKQuzFnkfRdedDVLYmKV
+```
 
 To get transaction details using confirmationID:
 ```
@@ -84,40 +88,19 @@ To update isSavedOnProfile transaction information:
 curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/is_saved/confirmation_id/5f17a02afbe8980577674011
 ```
 
-To cancel a transaction using confirmationID:
-```
-curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/cancel/confirmation_id/5f221ca77d6d25afa44ea4fe
-```
-
 To approve a transaction using confirmationID:
 ```
-curl -X POST \
-  http://0.0.0.0:8080/v1/validationtx/approve/confirmation_id/5f9089dcd8850661b1f1c3d3 \
-  -H 'Authorization: vouch-restapi-secret-key' \
-  -H 'Content-Type: application/json' \
-  -d '{
-        "id": "did:elastos:ifKeiEqaPuMpZKniH4jaHWoL3XobrHiKrm#ifKeiEqaPuMpZKniH4jaHWoL3XobrHiKrm#email",
-        "type": [
-            "BasicProfileCredential"
-        ],
-        "issuer": "did:elastos:iddJESh7ymo3xoVEpsC5476NSS8eepBJo8",
-        "issuanceDate": "2020-10-29T16:00:43.000Z",
-        "expirationDate": "2025-10-10T16:00:43.000Z",
-        "credentialSubject": {
-            "id": "did:elastos:ifKeiEqaPuMpZKniH4jaHWoL3XobrHiKrm",
-            "email": "rong.chen4@elastos.internet"
-        },
-        "proof": {
-            "type": "ECDSAsecp256r1",
-            "verificationMethod": "did:elastos:iddJESh7ymo3xoVEpsC5476NSS8eepBJo8#primary",
-            "signature": "xlGZqi-nDHVi8wtDU0L06uB8HRt4so-v1VyXLwpsecKhh3MMOM8U95hc-oTa6n_M4xE_r7BJ3mJnjc3WuXTdwg"
-        }
-    }'
+curl -X POST -H 'Authorization: vouch-restapi-secret-key' -H 'Content-Type: application/json' -H "Accept: application/json" -d @test/approve_tx.json http://localhost:8080/v1/validationtx/approve/confirmation_id/5f9089dcd8850661b1f1c3d3
 ```
 
 To reject a transaction using confirmationID:
 ```
 curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/reject/confirmation_id/5f221ca77d6d25afa44ea4fe
+```
+
+To cancel a transaction using confirmationID:
+```
+curl -XPOST -H "Authorization: vouch-restapi-secret-key" http://localhost:8080/v1/validationtx/cancel/confirmation_id/5f221ca77d6d25afa44ea4fe
 ```
 
 # Deploy to production
