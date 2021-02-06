@@ -19,7 +19,8 @@ class CreateProvider(BaseResource):
         name = data["name"]
         logo = data["logo"]
 
-        logo = f"data:{logo['content-type']};{logo['type']},{logo['data']}"
+        if not isinstance(logo, str):
+            logo = f"data:{logo['content-type']};{logo['type']},{logo['data']}"
 
         validation = data["validation"]
         for validation_type, values in validation.items():
